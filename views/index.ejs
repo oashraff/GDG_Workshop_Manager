@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GDG On Campus EUE Event Manager - Discover and book exciting tech workshops at European Universities in Egypt">
+    <meta name="keywords" content="GDG, Google Developer Group, workshops, tech events, EUE, programming, Firebase, Flutter, Android">
+    <meta name="author" content="Omar Ashraf Mohammed">
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234285f4'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='sans-serif' font-size='40' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title><%= title || 'GDG On Campus EUE - Event Manager' %></title>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">G</div>
+                GDG On Campus EUE
+            </a>
+            
+            <nav class="nav">
+                <a href="/attendee" class="nav-link">Browse Workshops</a>
+                <a href="/organiser" class="nav-link">Organiser Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero fade-in">
+            <div class="container">
+                <h1 class="slide-in-left">Google Developer Group @ <%= campusName || 'European Universities in Egypt' %></h1>
+                <p class="slide-in-up" style="animation-delay: 0.2s;">Discover, learn, and build with the latest Google technologies through hands-on workshops and community events designed for students and developers.</p>
+                
+                <div class="flex flex-center slide-in-up" style="gap: var(--spacing-lg); margin-top: var(--spacing-xl); animation-delay: 0.4s;">
+                    <a href="/attendee" class="btn btn-primary btn-large pulse-on-hover">
+                        <span class="material-icon">explore</span>
+                        Explore Workshops
+                    </a>
+                    <a href="/organiser" class="btn btn-large pulse-on-hover" style="background: rgba(255, 255, 255, 0.2); color: white; border: 2px solid white; backdrop-filter: blur(10px);">
+                        <span class="material-icon">admin_panel_settings</span>
+                        Organiser Access
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section style="padding: var(--spacing-3xl) 0; background: white;">
+            <div class="container">
+                <h2 class="text-center mb-5">Why Join GDG EUE Events?</h2>
+                
+                <div class="grid grid-3">
+                    <div class="card fade-in pulse-on-hover">
+                        <div class="card-body text-center">
+                            <div class="icon-wrapper float-animation" style="font-size: 3rem; margin-bottom: var(--spacing-md); color: var(--google-blue);">
+                                <span class="material-icon" style="font-size: 3rem;">code</span>
+                            </div>
+                            <h3>Hands-On Learning</h3>
+                            <p>Build real projects with Firebase, Flutter, Android, and other Google technologies through guided workshops.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in pulse-on-hover" style="animation-delay: 0.2s;">
+                        <div class="card-body text-center">
+                            <div class="icon-wrapper float-animation" style="font-size: 3rem; margin-bottom: var(--spacing-md); color: var(--google-green); animation-delay: 0.5s;">
+                                <span class="material-icon" style="font-size: 3rem;">group</span>
+                            </div>
+                            <h3>Developer Community</h3>
+                            <p>Connect with like-minded students and professionals. Network, collaborate, and grow together.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card fade-in pulse-on-hover hover-lift" style="animation-delay: 0.4s;">
+                        <div class="card-body text-center">
+                            <div class="icon-wrapper float-animation" style="font-size: 3rem; margin-bottom: var(--spacing-md); color: var(--google-yellow); animation-delay: 1s;">
+                                <span class="material-icon" style="font-size: 3rem;">school</span>
+                            </div>
+                            <h3>Expert Guidance</h3>
+                            <p>Learn from Google Developer Experts and experienced practitioners in the field.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section style="padding: var(--spacing-xl) 0; background: var(--google-grey-50);">
+            <div class="container">
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number" data-target="400">0</span>
+                        <span class="stat-label">
+                            <span class="material-icon">people</span>
+                            Students Trained
+                        </span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-target="50">0</span>
+                        <span class="stat-label">
+                            <span class="material-icon">event</span>
+                            Workshops Delivered
+                        </span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-target="10">0</span>
+                        <span class="stat-label">
+                            <span class="material-icon">business</span>
+                            Industry Partners
+                        </span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" data-target="95">0</span>
+                        <span class="stat-label">
+                            <span class="material-icon">thumb_up</span>
+                            Satisfaction Rate
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section style="padding: var(--spacing-3xl) 0; background: linear-gradient(135deg, var(--google-blue), var(--google-green)); color: white;">
+            <div class="container text-center">
+                <h2 style="color: white; font-size: 2.5rem; margin-bottom: var(--spacing-lg);">Ready to Start Your Journey?</h2>
+                <p style="font-size: 1.25rem; margin-bottom: var(--spacing-xl); opacity: 0.9;">Join thousands of students who have already enhanced their skills with GDG EUE workshops.</p>
+                
+                <div class="flex flex-center" style="gap: var(--spacing-lg);">
+                    <a href="/attendee" class="btn btn-large" style="background: white; color: var(--google-blue); font-weight: 500;">
+                        <span class="material-icon">calendar_month</span>
+                        Browse Upcoming Events
+                    </a>
+                    <a href="mailto:gdg@uol.eue.edu.eg" class="btn btn-large" style="background: rgba(255, 255, 255, 0.2); color: white; border: 2px solid white; backdrop-filter: blur(10px);">
+                        <span class="material-icon">email</span>
+                        Get In Touch
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academic Information -->
+        <section style="padding: var(--spacing-xl) 0; background: white; border-top: 1px solid var(--google-grey-200);">
+            <div class="container">
+                <div class="card" style="background: var(--google-blue-50); border: none;">
+                    <div class="card-body text-center">
+                        <h3 style="color: var(--google-blue-700); margin-bottom: var(--spacing-md);">Academic Project Notice</h3>
+                        <p style="color: var(--google-grey-700); margin-bottom: 0;">
+                            This event management system is developed as part of a midterm coursework assignment for 
+                            <strong>April 2025</strong> academic session. Designed for educational demonstration purposes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="grid grid-2">
+                <div>
+                    <h4 style="color: white; margin-bottom: var(--spacing-md);">GDG On Campus EUE</h4>
+                    <p style="margin-bottom: var(--spacing-md);">
+                        Google Developer Group at European Universities in Egypt - 
+                        Empowering the next generation of developers through education and community.
+                    </p>
+                    <p style="font-size: 0.875rem; opacity: 0.8; margin-bottom: 0;">
+                        Developed by Omar Ashraf Mohammed, Academic Session: April 2025
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 style="color: white; margin-bottom: var(--spacing-md);">Quick Links</h4>
+                    <div style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                        <a href="/attendee">
+                            <span class="material-icon">workshop</span>
+                            Browse Workshops
+                        </a>
+                        <a href="/organiser">
+                            <span class="material-icon">dashboard</span>
+                            Organiser Dashboard
+                        </a>
+                        <a href="mailto:gdg@uol.eue.edu.eg">
+                            <span class="material-icon">contact_mail</span>
+                            Contact Us
+                        </a>
+                        <a href="https://developers.google.com/community/gdg" target="_blank" rel="noopener">
+                            <span class="material-icon">public</span>
+                            About GDG Program
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="border-top: 1px solid var(--google-grey-700); margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); text-align: center;">
+                <p style="margin: 0; font-size: 0.875rem; opacity: 0.8;">
+                    © 2025 GDG On Campus EUE. This project is for educational purposes as part of coursework assignment.
+                    Google and GDG are trademarks of Google LLC.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Performance: Defer non-critical JavaScript -->
+    <script>
+        // Simple progressive enhancement for better user experience
+        document.addEventListener('DOMContentLoaded', function() {
+            // Number counting animation for statistics
+            function animateNumbers() {
+                const statNumbers = document.querySelectorAll('.stat-number');
+                
+                const observerOptions = {
+                    threshold: 0.5,
+                    rootMargin: '0px 0px -100px 0px'
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const target = entry.target;
+                            const finalValue = parseInt(target.getAttribute('data-target'));
+                            const isPercentage = target.parentElement.querySelector('.stat-label').textContent.includes('Rate');
+                            
+                            animateCounter(target, 0, finalValue, 2000, isPercentage);
+                            observer.unobserve(target);
+                        }
+                    });
+                }, observerOptions);
+                
+                statNumbers.forEach(number => {
+                    observer.observe(number);
+                });
+            }
+            
+            function animateCounter(element, start, end, duration, isPercentage = false) {
+                const startTime = performance.now();
+                const suffix = isPercentage ? '%' : '+';
+                
+                function updateCounter(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    // Easing function for smooth animation
+                    const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+                    const currentValue = Math.floor(start + (end - start) * easeOutCubic);
+                    
+                    element.textContent = currentValue + suffix;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        element.textContent = end + suffix;
+                    }
+                }
+                
+                requestAnimationFrame(updateCounter);
+            }
+            
+            // Initialize number animation
+            animateNumbers();
+            
+            // Add smooth scrolling for internal links
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Add loading states to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.type === 'submit' || this.tagName === 'BUTTON') {
+                        this.style.opacity = '0.7';
+                        setTimeout(() => {
+                            this.style.opacity = '1';
+                        }, 2000);
+                    }
+                });
+            });
+            
+            // Analytics event tracking (placeholder for educational purposes)
+            console.log('GDG EUE Event Manager loaded successfully');
+            console.log('Academic project by Omar Ashraf Mohammed, April 2025');
+        });
+    </script>
+</body>
+</html>

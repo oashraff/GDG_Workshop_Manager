@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Edit Workshop - GDG EUE Workshop Manager">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234285f4'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='sans-serif' font-size='40' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title><%= title || 'Edit Workshop - GDG EUE' %></title>
+    
+    <!-- Security headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">G</div>
+                GDG Workshop Manager
+            </a>
+            
+            <nav class="nav">
+                <a href="/events/dashboard" class="nav-link">Dashboard</a>
+                <a href="/events/create" class="nav-link">Create Workshop</a>
+                <a href="/attendee" class="nav-link">Public View</a>
+                
+                <form action="/logout" method="POST" style="display: inline;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Page Header -->
+            <div style="margin-bottom: var(--spacing-xl);">
+                <div class="flex flex-between">
+                    <div>
+                        <h1 style="margin-bottom: var(--spacing-sm);">Edit Workshop</h1>
+                        <p style="color: var(--google-grey-600);">
+                            <% if (event && event.title) { %>
+                                Editing: <strong><%= event.title %></strong>
+                            <% } else { %>
+                                Modify workshop details and settings
+                            <% } %>
+                        </p>
+                        
+                        <!-- Workshop Metadata -->
+                        <% if (event) { %>
+                            <div style="margin-top: var(--spacing-md); padding: var(--spacing-md); background: var(--google-grey-50); border-radius: var(--border-radius-md);">
+                                <div style="display: flex; gap: var(--spacing-lg); flex-wrap: wrap; font-size: 0.875rem; color: var(--google-grey-700);">
+                                    <span><strong>Created:</strong> <%= formatDate ? formatDate(event.created_at) : event.created_at %></span>
+                                    <% if (event.published_at) { %>
+                                        <span><strong>Published:</strong> <%= formatDate ? formatDate(event.published_at) : event.published_at %></span>
+                                    <% } else { %>
+                                        <span style="color: var(--google-yellow-700);"><strong>Status:</strong> Draft</span>
+                                    <% } %>
+                                    <span><strong>Last Modified:</strong> <%= formatDate ? formatDate(event.last_modified) : event.last_modified %></span>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div>
+                        <a href="/events/dashboard" class="btn btn-outline">
+                            ← Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workshop Edit Form -->
+            <div class="grid grid-2" style="gap: var(--spacing-xl);">
+                <!-- Main Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Workshop Details</h2>
+                        <p style="color: var(--google-grey-600); font-size: 0.875rem;">
+                            All fields marked with * are required
+                        </p>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Error Messages -->
+                        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+                            <div class="alert alert-error" role="alert">
+                                <strong>Please correct the following errors:</strong>
+                                <ul style="margin: var(--spacing-sm) 0 0 var(--spacing-md);">
+                                    <% errors.forEach(error => { %>
+                                        <li><%= error.msg %></li>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                        <% } %>
+                        
+                        <form action="/events/edit/<%= event.id %>" method="POST" novalidate>
+                            <!-- CSRF Protection -->
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            
+                            <!-- Workshop Title -->
+                            <div class="form-group">
+                                <label for="title" class="form-label">
+                                    Workshop Title <span style="color: var(--google-red);">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="title" 
+                                    name="title" 
+                                    class="form-control" 
+                                    required 
+                                    placeholder="e.g., Build Firebase Auth in 60 minutes"
+                                    value="<%= event.title || '' %>"
+                                    aria-describedby="title-help"
+                                >
+                                <div id="title-help" class="form-text">
+                                    Create an engaging title that clearly describes what attendees will build
+                                </div>
+                            </div>
+                            
+                            <!-- Workshop Description -->
+                            <div class="form-group">
+                                <label for="description" class="form-label">
+                                    Description
+                                </label>
+                                <textarea 
+                                    id="description" 
+                                    name="description" 
+                                    class="form-control" 
+                                    rows="4"
+                                    placeholder="Describe what attendees will learn and build in this workshop..."
+                                    aria-describedby="description-help"
+                                ><%= event.description || '' %></textarea>
+                                <div id="description-help" class="form-text">
+                                    Provide a detailed description including prerequisites and outcomes
+                                </div>
+                            </div>
+                            
+                            <!-- Tech Stack -->
+                            <div class="form-group">
+                                <label for="tech_stack" class="form-label">
+                                    Technology Stack <span style="color: var(--google-red);">*</span>
+                                </label>
+                                <select 
+                                    id="tech_stack" 
+                                    name="tech_stack" 
+                                    class="form-control" 
+                                    multiple
+                                    aria-describedby="tech-help"
+                                >
+                                    <% 
+                                    const availableTech = ['Firebase', 'Flutter', 'Android', 'Cloud', 'TensorFlow', 'Angular', 'Material', 'JavaScript', 'Python', 'Kotlin'];
+                                    const selectedTech = event.tech_stack || [];
+                                    %>
+                                    <% availableTech.forEach(tech => { %>
+                                        <option value="<%= tech %>" <%= selectedTech.includes(tech) ? 'selected' : '' %>>
+                                            <%= tech === 'Android' ? 'Android Development' : tech === 'Cloud' ? 'Google Cloud' : tech === 'Material' ? 'Material Design' : tech %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                                <div id="tech-help" class="form-text">
+                                    Hold Ctrl/Cmd to select multiple technologies
+                                </div>
+                            </div>
+                            
+                            <!-- Skill Level -->
+                            <div class="form-group">
+                                <label for="skill_level" class="form-label">
+                                    Skill Level <span style="color: var(--google-red);">*</span>
+                                </label>
+                                <select 
+                                    id="skill_level" 
+                                    name="skill_level" 
+                                    class="form-control" 
+                                    required
+                                    aria-describedby="skill-help"
+                                >
+                                    <option value="">Select difficulty level</option>
+                                    <option value="1" <%= event.skill_level == 1 ? 'selected' : '' %>>
+                                        Beginner - No prior experience needed
+                                    </option>
+                                    <option value="2" <%= event.skill_level == 2 ? 'selected' : '' %>>
+                                        Intermediate - Some programming experience required
+                                    </option>
+                                    <option value="3" <%= event.skill_level == 3 ? 'selected' : '' %>>
+                                        Advanced - Strong programming background expected
+                                    </option>
+                                </select>
+                                <div id="skill-help" class="form-text">
+                                    This helps attendees choose appropriate workshops
+                                </div>
+                            </div>
+                            
+                            <!-- Workshop Date & Time -->
+                            <div class="grid grid-2">
+                                <div class="form-group">
+                                    <label for="event_date" class="form-label">
+                                        Date & Time <span style="color: var(--google-red);">*</span>
+                                    </label>
+                                    <input 
+                                        type="datetime-local" 
+                                        id="event_date" 
+                                        name="event_date" 
+                                        class="form-control" 
+                                        required
+                                        value="<%= formatDate ? formatDate(event.event_date) : event.event_date %>"
+                                        aria-describedby="date-help"
+                                    >
+                                    <div id="date-help" class="form-text">
+                                        Workshop start time
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="duration_minutes" class="form-label">
+                                        Duration (minutes)
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="duration_minutes" 
+                                        name="duration_minutes" 
+                                        class="form-control" 
+                                        min="30" 
+                                        max="480" 
+                                        step="15"
+                                        value="<%= event.duration_minutes || '90' %>"
+                                        aria-describedby="duration-help"
+                                    >
+                                    <div id="duration-help" class="form-text">
+                                        Typical workshops: 60-120 minutes
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Capacity -->
+                            <div class="form-group">
+                                <label for="max_attendees" class="form-label">
+                                    Maximum Attendees
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="max_attendees" 
+                                    name="max_attendees" 
+                                    class="form-control" 
+                                    min="5" 
+                                    max="200"
+                                    value="<%= event.max_attendees || '50' %>"
+                                    aria-describedby="capacity-help"
+                                >
+                                <div id="capacity-help" class="form-text">
+                                    Consider room capacity and interactive nature of the workshop
+                                </div>
+                            </div>
+                            
+                            <!-- Co-hosts -->
+                            <div class="form-group">
+                                <label for="co_hosts" class="form-label">
+                                    Co-hosts (GDG Members)
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="co_hosts" 
+                                    name="co_hosts" 
+                                    class="form-control" 
+                                    placeholder="member1@uol.eue.edu.eg, member2@uol.eue.edu.eg"
+                                    value="<%= Array.isArray(event.co_hosts) ? event.co_hosts.join(', ') : (event.co_hosts || '') %>"
+                                    aria-describedby="cohost-help"
+                                >
+                                <div id="cohost-help" class="form-text">
+                                    Separate multiple emails with commas. Co-hosts get read-only dashboard access
+                                </div>
+                            </div>
+                            
+                            <!-- Recurring Event Option -->
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    id="is_recurring" 
+                                    name="is_recurring" 
+                                    class="form-check-input"
+                                    <%= event.is_recurring ? 'checked' : '' %>
+                                >
+                                <label for="is_recurring" class="form-check-label">
+                                    Make this a recurring workshop series
+                                </label>
+                            </div>
+                            
+                            <!-- Form Actions -->
+                            <div class="flex flex-between" style="margin-top: var(--spacing-xl); gap: var(--spacing-md);">
+                                <a href="/events/dashboard" class="btn btn-outline">
+                                    <span class="material-icon">arrow_back</span>
+                                    Cancel Changes
+                                </a>
+                                <div style="display: flex; gap: var(--spacing-md); flex-wrap: wrap;">
+                                    <% if (event.published_at) { %>
+                                        <button type="submit" name="action" value="unpublish" class="btn btn-outline" style="color: var(--google-yellow-700); border-color: var(--google-yellow-700);">
+                                            <span class="material-icon">visibility_off</span>
+                                            Unpublish Workshop
+                                        </button>
+                                    <% } else { %>
+                                        <button type="submit" name="action" value="save_draft" class="btn btn-outline">
+                                            <span class="material-icon">save</span>
+                                            Save Draft
+                                        </button>
+                                        <button type="submit" name="action" value="publish" class="btn btn-primary">
+                                            <span class="material-icon">publish</span>
+                                            Publish Workshop
+                                        </button>
+                                    <% } %>
+                                    <button type="submit" name="action" value="update" class="btn btn-primary">
+                                        <span class="material-icon">save</span>
+                                        Update Workshop
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Side Panel -->
+                <div>
+                    <!-- Current Bookings (if published) -->
+                    <% if (event.published_at) { %>
+                        <div class="card" style="margin-bottom: var(--spacing-lg);">
+                            <div class="card-header">
+                                <h3>Current Bookings</h3>
+                            </div>
+                            <div class="card-body">
+                                <div style="text-align: center; margin-bottom: var(--spacing-md);">
+                                    <div style="font-size: 2rem; font-weight: 700; color: var(--google-blue);">
+                                        <%= event.confirmed_bookings || 0 %>/<%= event.max_attendees %>
+                                    </div>
+                                    <div style="color: var(--google-grey-600);">Confirmed Attendees</div>
+                                </div>
+                                
+                                <!-- Progress Bar -->
+                                <div class="progress" style="margin-bottom: var(--spacing-md);">
+                                    <% const progressPercent = ((event.confirmed_bookings || 0) / event.max_attendees) * 100; %>
+                                    <div class="progress-fill" style="width: <%= progressPercent %>%; background: var(--google-green);"></div>
+                                </div>
+                                
+                                <div style="font-size: 0.875rem; color: var(--google-grey-600);">
+                                    <% if (progressPercent < 50) { %>
+                                        Moderate interest - consider promotion
+                                    <% } else if (progressPercent < 85) { %>
+                                        Good response rate
+                                    <% } else { %>
+                                        High demand - nearly full!
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                    
+                    <!-- Workshop Preview -->
+                    <div class="card" style="margin-bottom: var(--spacing-lg);">
+                        <div class="card-header">
+                            <h3>Preview</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="preview-content">
+                                <!-- Preview will be generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="card" style="margin-bottom: var(--spacing-lg);">
+                        <div class="card-header">
+                            <h3>Quick Actions</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="btn-group" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                                <% if (event.published_at) { %>
+                                    <a href="/attendee/event/<%= event.id %>" class="btn btn-outline btn-sm" target="_blank">
+                                        <span class="material-icon">open_in_new</span>
+                                        View Public Page
+                                    </a>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="copyShareLink()">
+                                        <span class="material-icon">link</span>
+                                        Copy Share Link
+                                    </button>
+                                <% } %>
+                                <% if (event.is_recurring) { %>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="cloneEvent()">
+                                        <span class="material-icon">content_copy</span>
+                                        Clone for Next Session
+                                    </button>
+                                <% } %>
+                                <button type="button" class="btn btn-outline btn-sm" onclick="exportToCalendar()">
+                                    <span class="material-icon">calendar_today</span>
+                                    Export to Calendar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Delete Workshop -->
+                    <div class="card" style="border-color: var(--google-red-300);">
+                        <div class="card-header" style="background: var(--google-red-50);">
+                            <h3 style="color: var(--google-red-700);">
+                                <span class="material-icon">warning</span>
+                                Danger Zone
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p style="color: var(--google-grey-600); font-size: 0.875rem; margin-bottom: var(--spacing-md);">
+                                Permanently delete this workshop. This action cannot be undone.
+                            </p>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteWorkshop(<%= event.id %>)">
+                                <span class="material-icon">delete</span>
+                                Delete Workshop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="flex flex-between">
+                <div>
+                    <p style="margin: 0; font-size: 0.875rem;">
+                        GDG On Campus EUE - Workshop Management System
+                    </p>
+                </div>
+                <div>
+                    <p style="margin: 0; font-size: 0.75rem; opacity: 0.8;">
+                        Academic Project by Omar Ashraf Mohammed, April 2025
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Form Enhancement -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners for buttons
+            const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+            const cloneEventBtn = document.getElementById('cloneEventBtn');
+            const exportCalendarBtn = document.getElementById('exportCalendarBtn');
+            const deleteWorkshopBtn = document.getElementById('deleteWorkshopBtn');
+            
+            if (copyShareLinkBtn) {
+                copyShareLinkBtn.addEventListener('click', copyShareLink);
+            }
+            
+            if (cloneEventBtn) {
+                cloneEventBtn.addEventListener('click', cloneEvent);
+            }
+            
+            if (exportCalendarBtn) {
+                exportCalendarBtn.addEventListener('click', exportToCalendar);
+            }
+            
+            if (deleteWorkshopBtn) {
+                deleteWorkshopBtn.addEventListener('click', function() {
+                    deleteWorkshop(this.getAttribute('data-event-id'));
+                });
+            }
+            
+            const form = document.querySelector('form');
+            const titleInput = document.getElementById('title');
+            const descriptionInput = document.getElementById('description');
+            const techStackSelect = document.getElementById('tech_stack');
+            const skillLevelSelect = document.getElementById('skill_level');
+            const previewContent = document.getElementById('preview-content');
+            
+            // Real-time preview generation
+            function updatePreview() {
+                const title = titleInput.value.trim();
+                const description = descriptionInput.value.trim();
+                const selectedTech = Array.from(techStackSelect.selectedOptions).map(option => option.value);
+                const skillLevel = skillLevelSelect.value;
+                
+                const skillLevels = { '1': 'Beginner', '2': 'Intermediate', '3': 'Advanced' };
+                const skillClasses = { '1': 'skill-beginner', '2': 'skill-intermediate', '3': 'skill-advanced' };
+                
+                let previewHTML = `
+                    <div class="event-card-preview" style="border: 1px solid var(--google-grey-300); border-radius: var(--border-radius-md); padding: var(--spacing-md);">
+                        <h4 style="margin-bottom: var(--spacing-sm); color: var(--google-grey-800);">${title || 'Workshop Title'}</h4>
+                `;
+                
+                if (selectedTech.length > 0) {
+                    previewHTML += '<div class="tech-stack" style="margin-bottom: var(--spacing-sm);">';
+                    selectedTech.forEach(tech => {
+                        previewHTML += `<span class="tech-tag ${tech.toLowerCase()}" style="background: var(--google-blue-50); color: var(--google-blue-700); padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--border-radius-sm); font-size: 0.75rem; margin-right: var(--spacing-xs);">${tech}</span>`;
+                    });
+                    previewHTML += '</div>';
+                }
+                
+                if (skillLevel) {
+                    previewHTML += `<div><span class="skill-badge ${skillClasses[skillLevel]}" style="background: var(--google-green-50); color: var(--google-green-700); padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--border-radius-sm); font-size: 0.75rem;">${skillLevels[skillLevel]}</span></div>`;
+                }
+                
+                if (description) {
+                    previewHTML += `<p style="margin-top: var(--spacing-sm); color: var(--google-grey-600); font-size: 0.875rem;">${description.substring(0, 150)}${description.length > 150 ? '...' : ''}</p>`;
+                }
+                
+                previewHTML += '</div>';
+                previewContent.innerHTML = previewHTML;
+            }
+            
+            // Initial preview
+            updatePreview();
+            
+            // Attach event listeners for real-time preview
+            titleInput.addEventListener('input', updatePreview);
+            descriptionInput.addEventListener('input', updatePreview);
+            techStackSelect.addEventListener('change', updatePreview);
+            skillLevelSelect.addEventListener('change', updatePreview);
+            
+            // Form validation enhancement
+            form.addEventListener('submit', function(e) {
+                const submitButton = e.submitter;
+                const originalText = submitButton.textContent;
+                
+                // Confirm destructive actions
+                if (submitButton.name === 'action' && submitButton.value === 'unpublish') {
+                    if (!confirm('Are you sure you want to unpublish this workshop? It will no longer be visible to attendees.')) {
+                        e.preventDefault();
+                        return;
+                    }
+                }
+                
+                // Show loading state
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="spinner"></span> Processing...';
+                
+                // Reset button after timeout (in case of error)
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                }, 10000);
+            });
+            
+            console.log('Workshop edit form loaded successfully');
+        });
+        
+        // Quick action functions
+        function copyShareLink() {
+            const url = `${window.location.origin}/attendee/event/<%= event.id %>`;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showNotification('Share link copied to clipboard!', 'success');
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(url);
+                });
+            } else {
+                fallbackCopyTextToClipboard(url);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            textArea.style.padding = '0';
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            textArea.style.background = 'transparent';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showNotification('Share link copied to clipboard!', 'success');
+                } else {
+                    prompt('Copy this link:', text);
+                }
+            } catch (err) {
+                prompt('Copy this link:', text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function cloneEvent() {
+            if (confirm('Create a copy of this workshop for the next session?')) {
+                fetch('/events/clone/<%= event.id %>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': '<%= csrfToken %>'
+                    }
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Workshop cloned successfully!', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/events/dashboard';
+                        }, 1500);
+                    } else {
+                        throw new Error(data.error || 'Failed to clone workshop');
+                    }
+                })
+                .catch(error => {
+                    console.error('Clone error:', error);
+                    showNotification('Failed to clone workshop. Please try again.', 'error');
+                });
+            }
+        }
+        
+        function exportToCalendar() {
+            // Direct download of .ics file
+            window.open(`/events/<%= event.id %>/export-calendar`, '_blank');
+            showNotification('Calendar file download started!', 'success');
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: var(--spacing-md);
+                border-radius: var(--border-radius-md);
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+                max-width: 300px;
+            `;
+
+            // Set background color based on type
+            switch (type) {
+                case 'success':
+                    notification.style.background = 'var(--google-green)';
+                    break;
+                case 'error':
+                    notification.style.background = 'var(--google-red)';
+                    break;
+                default:
+                    notification.style.background = 'var(--google-blue)';
+            }
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Animate out and remove
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        function deleteWorkshop(eventId) {
+            const confirmMessage = 'Are you absolutely sure you want to delete this workshop?\n\nThis action cannot be undone and will:\n- Remove all booking data\n- Cancel attendee reservations\n- Delete workshop permanently\n\nType "DELETE" to confirm:';
+            
+            const confirmation = prompt(confirmMessage);
+            
+            if (confirmation === 'DELETE') {
+                fetch(`/events/delete/${eventId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': '<%= csrfToken %>'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        showNotification('Workshop deleted successfully.', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/events/dashboard';
+                        }, 1500);
+                    } else {
+                        throw new Error('Failed to delete workshop');
+                    }
+                })
+                .catch(error => {
+                    console.error('Delete error:', error);
+                    showNotification('Failed to delete workshop. Please try again.', 'error');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

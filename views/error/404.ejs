@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234285f4'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='sans-serif' font-size='40' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title><%= title || 'Page Not Found - GDG EUE' %></title>
+</head>
+<body style="background: linear-gradient(135deg, var(--google-blue-50), var(--google-green-50)); min-height: 100vh;">
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">G</div>
+                GDG On Campus EUE
+            </a>
+            
+            <nav class="nav">
+                <a href="/attendee" class="nav-link">Browse Workshops</a>
+                <a href="/" class="nav-link">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 404 Error Content -->
+    <main style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 80px); padding: var(--spacing-lg) 0;">
+        <div class="container text-center">
+            <div class="card" style="max-width: 600px; margin: 0 auto; box-shadow: var(--shadow-xl);">
+                <div class="card-body" style="padding: var(--spacing-3xl);">
+                    <!-- 404 Icon -->
+                    <div style="font-size: 6rem; margin-bottom: var(--spacing-lg); opacity: 0.7;">
+                        <span class="material-icon" style="font-size: 6rem;">!</span>
+                    </div>
+                    
+                    <!-- Error Message -->
+                    <h1 style="color: var(--google-grey-800); margin-bottom: var(--spacing-md); font-size: 2.5rem;">
+                        Page Not Found
+                    </h1>
+                    
+                    <p style="color: var(--google-grey-600); margin-bottom: var(--spacing-lg); font-size: 1.125rem;">
+                        The page you're looking for doesn't exist or has been moved.
+                    </p>
+                    
+                    <% if (typeof requestedPath !== 'undefined' && requestedPath) { %>
+                        <div style="background: var(--google-grey-100); padding: var(--spacing-md); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-lg); font-family: monospace; font-size: 0.875rem; color: var(--google-grey-700);">
+                            Requested: <%= requestedPath %>
+                        </div>
+                    <% } %>
+                    
+                    <!-- Navigation Options -->
+                    <div class="flex flex-center" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                        <a href="/" class="btn btn-primary btn-large">
+                            Go Home
+                        </a>
+                        <a href="/attendee" class="btn btn-outline btn-large">
+                            Browse Workshops
+                        </a>
+                    </div>
+                    
+                    <!-- Search Suggestions -->
+                    <div style="border-top: 1px solid var(--google-grey-200); padding-top: var(--spacing-lg);">
+                        <h3 style="margin-bottom: var(--spacing-md); color: var(--google-grey-700);">
+                            Looking for something specific?
+                        </h3>
+                        
+                        <div class="grid grid-2" style="gap: var(--spacing-md); max-width: 400px; margin: 0 auto;">
+                            <a href="/attendee" class="card" style="text-decoration: none; padding: var(--spacing-md); transition: all var(--transition-fast);">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 1.5rem; margin-bottom: var(--spacing-xs);">
+                                        <span class="material-icon">school</span>
+                                    </div>
+                                    <div style="font-weight: 500; color: var(--google-blue);">Workshops</div>
+                                </div>
+                            </a>
+                            
+                            <a href="/organiser" class="card" style="text-decoration: none; padding: var(--spacing-md); transition: all var(--transition-fast);">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 1.5rem; margin-bottom: var(--spacing-xs);">
+                                        <span class="material-icon">settings</span>
+                                    </div>
+                                    <div style="font-weight: 500; color: var(--google-blue);">Organiser</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Help Section -->
+            <div class="card" style="max-width: 600px; margin: var(--spacing-xl) auto 0; background: var(--google-yellow-50); border: none;">
+                <div class="card-body text-center">
+                    <h4 style="color: var(--google-yellow-700); margin-bottom: var(--spacing-md);">
+                        Still Need Help?
+                    </h4>
+                    <p style="color: var(--google-grey-700); margin-bottom: var(--spacing-lg);">
+                        If you believe this is an error or if you were expecting to find content here, 
+                        please contact the GDG team.
+                    </p>
+                    <a href="mailto:gdg@uol.eue.edu.eg?subject=404 Error Report&body=I encountered a 404 error on: <%= typeof requestedPath !== 'undefined' ? requestedPath : 'unknown page' %>" 
+                       class="btn btn-outline" 
+                       style="border-color: var(--google-yellow-600); color: var(--google-yellow-700);">
+                        Report Issue
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Academic Notice -->
+            <div style="margin-top: var(--spacing-xl); padding: var(--spacing-md);">
+                <p style="font-size: 0.75rem; color: var(--google-grey-600); margin: 0;">
+                    GDG EUE Event Manager - Academic Project<br>
+                    Developed by Omar Ashraf Mohammed, April 2025
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript for Enhanced 404 Experience -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to navigation cards
+            const navCards = document.querySelectorAll('.card[href]');
+            navCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = 'var(--shadow-md)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'var(--shadow-sm)';
+                });
+            });
+            
+            // Auto-suggest based on URL path
+            const path = '<%= typeof requestedPath !== "undefined" ? requestedPath : "" %>';
+            if (path) {
+                let suggestion = '';
+                
+                if (path.includes('event') || path.includes('workshop')) {
+                    suggestion = 'Did you mean to browse <a href="/attendee">upcoming workshops</a>?';
+                } else if (path.includes('admin') || path.includes('manage') || path.includes('dashboard')) {
+                    suggestion = 'Looking for the <a href="/organiser">organiser dashboard</a>?';
+                } else if (path.includes('login') || path.includes('auth')) {
+                    suggestion = 'Try the <a href="/login">organiser login page</a>.';
+                }
+                
+                if (suggestion) {
+                    const suggestionDiv = document.createElement('div');
+                    suggestionDiv.className = 'alert alert-info';
+                    suggestionDiv.innerHTML = `<strong>Quick Suggestion:</strong> ${suggestion}`;
+                    suggestionDiv.style.marginTop = 'var(--spacing-lg)';
+                    suggestionDiv.style.textAlign = 'left';
+                    
+                    document.querySelector('.card-body').appendChild(suggestionDiv);
+                }
+            }
+            
+            // Track 404 errors for analytics (educational purposes)
+            console.warn('404 Error tracked:', {
+                path: path,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                referrer: document.referrer
+            });
+            
+            // Add back button functionality
+            if (window.history.length > 1) {
+                const backButton = document.createElement('button');
+                backButton.className = 'btn btn-secondary';
+                backButton.innerHTML = '← Go Back';
+                backButton.style.marginRight = 'var(--spacing-md)';
+                backButton.onclick = () => window.history.back();
+                
+                const buttonContainer = document.querySelector('.flex.flex-center');
+                buttonContainer.insertBefore(backButton, buttonContainer.firstChild);
+            }
+            
+            // Accessibility: Focus management
+            document.querySelector('h1').focus();
+            
+            console.log('404 Page loaded - GDG EUE Event Manager');
+        });
+    </script>
+</body>
+</html>

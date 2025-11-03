@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GDG EUE Workshop Manager - Organiser Dashboard">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234285f4'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='sans-serif' font-size='40' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title><%= title || 'GDG EUE Workshop Manager' %></title>
+    
+    <!-- Security headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">G</div>
+                GDG Workshop Manager
+            </a>
+            
+            <nav class="nav">
+                <a href="/events/dashboard" class="nav-link active">Dashboard</a>
+                <a href="/events/create" class="nav-link">Create Workshop</a>
+                <a href="/attendee" class="nav-link">Public View</a>
+                
+                <form action="/logout" method="POST" style="display: inline;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-secondary btn-small">
+                        Sign Out
+                    </button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main style="padding: var(--spacing-xl) 0;">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <div class="card" style="background: linear-gradient(135deg, var(--google-blue), var(--google-green)); color: white; margin-bottom: var(--spacing-xl);">
+                <div class="card-body">
+                    <h1 style="color: white; margin-bottom: var(--spacing-sm);">
+                        <%= title || 'GDG EUE Workshop Manager' %>
+                    </h1>
+                    <p style="margin: 0; opacity: 0.9; font-size: 1.125rem;">
+                        <%= description || 'Google Developer Group @ European Universities in Egypt' %>
+                    </p>
+                    <div style="margin-top: var(--spacing-lg);">
+                        <a href="/events/create" class="btn btn-large" style="background: white; color: var(--google-blue); font-weight: 500;">
+                            Create New Workshop
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-3" style="margin-bottom: var(--spacing-xl);">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2.5rem; font-weight: 700; color: var(--google-blue); margin-bottom: var(--spacing-sm);">
+                            <%= publishedEvents ? publishedEvents.length : 0 %>
+                        </div>
+                        <div style="color: var(--google-grey-600); font-weight: 500;">Published Workshops</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2.5rem; font-weight: 700; color: var(--google-green); margin-bottom: var(--spacing-sm);">
+                            <%= draftEvents ? draftEvents.length : 0 %>
+                        </div>
+                        <div style="color: var(--google-grey-600); font-weight: 500;">Draft Workshops</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2.5rem; font-weight: 700; color: var(--google-yellow-600); margin-bottom: var(--spacing-sm);">
+                            <% 
+                            let totalBookings = 0;
+                            if (publishedEvents) {
+                                publishedEvents.forEach(event => {
+                                    totalBookings += event.confirmed_bookings || 0;
+                                });
+                            }
+                            %>
+                            <%= totalBookings %>
+                        </div>
+                        <div style="color: var(--google-grey-600); font-weight: 500;">Total Bookings</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Published Workshops Section -->
+            <div style="margin-bottom: var(--spacing-3xl);">
+                <div class="flex flex-between" style="margin-bottom: var(--spacing-lg);">
+                    <h2>Published Workshops</h2>
+                    <div style="color: var(--google-grey-600); font-size: 0.875rem;">
+                        Visible to attendees and accepting bookings
+                    </div>
+                </div>
+                
+                <% if (publishedEvents && publishedEvents.length > 0) { %>
+                    <div class="grid grid-2">
+                        <% publishedEvents.forEach(event => { %>
+                            <div class="event-card">
+                                <div class="event-card-header">
+                                    <h3 class="event-title"><%= event.title %></h3>
+                                    <div class="event-meta">
+                                        <span><span class="material-icon" style="font-size: 1rem; vertical-align: middle;">calendar_today</span> <%= formatDate(event.event_date) %></span>
+                                        <span><span class="material-icon" style="font-size: 1rem; vertical-align: middle;">group</span> <%= event.confirmed_bookings || 0 %>/<%= event.max_attendees %></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="event-card-body">
+                                    <!-- Tech Stack -->
+                                    <div class="tech-stack">
+                                        <% event.tech_stack.forEach(tech => { %>
+                                            <span class="tech-tag <%= tech.toLowerCase() %>"><%= tech %></span>
+                                        <% }); %>
+                                    </div>
+                                    
+                                    <!-- Skill Level -->
+                                    <div style="margin-bottom: var(--spacing-md);">
+                                        <% 
+                                        const skillLevels = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced' };
+                                        const skillClasses = { 1: 'skill-beginner', 2: 'skill-intermediate', 3: 'skill-advanced' };
+                                        %>
+                                        <span class="skill-badge <%= skillClasses[event.skill_level] %>">
+                                            <%= skillLevels[event.skill_level] || 'Unknown' %>
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Attendance Progress -->
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs); font-size: 0.875rem;">
+                                            <span>Attendance</span>
+                                            <span><%= event.confirmed_bookings || 0 %>/<%= event.max_attendees %></span>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: <%= ((event.confirmed_bookings || 0) / event.max_attendees * 100) %>%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="event-card-footer">
+                                    <div class="btn-group" style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+                                        <a href="/events/edit/<%= event.id %>" class="btn btn-secondary btn-small">
+                                            <span class="material-icon">edit</span>
+                                            Edit Details
+                                        </a>
+                                        <a href="/attendee/event/<%= event.id %>" class="btn btn-outline btn-small" target="_blank">
+                                            <span class="material-icon">open_in_new</span>
+                                            Public View
+                                        </a>
+                                        <button class="btn btn-outline btn-small view-attendees-btn" data-event-id="<%= event.id %>">
+                                            <span class="material-icon">people</span>
+                                            View Attendees (<%= event.confirmed_bookings || 0 %>)
+                                        </button>
+                                    </div>
+                                    
+                                    <div style="font-size: 0.75rem; color: var(--google-grey-600); margin-top: var(--spacing-sm);">
+                                        Created: <%= formatDate(event.created_at) %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="card" style="text-align: center; padding: var(--spacing-3xl);">
+                        <div style="font-size: 3rem; margin-bottom: var(--spacing-lg); opacity: 0.5;">
+                            <span class="material-icon" style="font-size: 3rem;">event_available</span>
+                        </div>
+                        <h3 style="margin-bottom: var(--spacing-md);">No Published Workshops Yet</h3>
+                        <p style="color: var(--google-grey-600); margin-bottom: var(--spacing-lg);">
+                            Create your first workshop to start engaging with the GDG community.
+                        </p>
+                        <a href="/events/create" class="btn btn-primary">Create First Workshop</a>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Draft Workshops Section -->
+            <div>
+                <div class="flex flex-between" style="margin-bottom: var(--spacing-lg);">
+                    <h2>Draft Workshops</h2>
+                    <div style="color: var(--google-grey-600); font-size: 0.875rem;">
+                        Private drafts not visible to attendees
+                    </div>
+                </div>
+                
+                <% if (draftEvents && draftEvents.length > 0) { %>
+                    <div class="grid grid-2">
+                        <% draftEvents.forEach(event => { %>
+                            <div class="event-card" style="border: 2px dashed var(--google-grey-300);">
+                                <div class="event-card-header" style="background: var(--google-grey-50);">
+                                    <h3 class="event-title">
+                                        <%= event.title %>
+                                        <span class="badge badge-secondary" style="margin-left: var(--spacing-sm);">Draft</span>
+                                    </h3>
+                                    <div class="event-meta">
+                                        <span><span class="material-icon" style="font-size: 1rem; vertical-align: middle;">calendar_today</span> <%= formatDate(event.event_date) %></span>
+                                        <span><span class="material-icon" style="font-size: 1rem; vertical-align: middle;">edit</span> Last modified: <%= formatDate(event.last_modified) %></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="event-card-body">
+                                    <!-- Tech Stack -->
+                                    <div class="tech-stack">
+                                        <% event.tech_stack.forEach(tech => { %>
+                                            <span class="tech-tag <%= tech.toLowerCase() %>"><%= tech %></span>
+                                        <% }); %>
+                                    </div>
+                                    
+                                    <!-- Description Preview -->
+                                    <% if (event.description) { %>
+                                        <p class="event-description" style="font-size: 0.875rem;">
+                                            <%= event.description.substring(0, 150) %><%= event.description.length > 150 ? '...' : '' %>
+                                        </p>
+                                    <% } %>
+                                </div>
+                                
+                                <div class="event-card-footer">
+                                    <div>
+                                        <a href="/events/edit/<%= event.id %>" class="btn btn-primary btn-small">
+                                            Continue Editing
+                                        </a>
+                                        <button 
+                                            class="btn btn-success btn-small publish-btn" 
+                                            data-event-id="<%= event.id %>"
+                                        >
+                                            Publish Workshop
+                                        </button>
+                                    </div>
+                                    
+                                    <div style="font-size: 0.75rem; color: var(--google-grey-600);">
+                                        Created: <%= formatDate(event.created_at) %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="card" style="text-align: center; padding: var(--spacing-xl); background: var(--google-grey-50); border: 2px dashed var(--google-grey-300);">
+                        <div style="font-size: 2rem; margin-bottom: var(--spacing-md); opacity: 0.5;">
+                            <span class="material-icon" style="font-size: 2rem;">draft</span>
+                        </div>
+                        <h4 style="margin-bottom: var(--spacing-sm);">No Draft Workshops</h4>
+                        <p style="color: var(--google-grey-600); margin: 0; font-size: 0.875rem;">
+                            All your workshops are either published or you haven't created any drafts yet.
+                        </p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="flex flex-between">
+                <div>
+                    <p style="margin: 0; font-size: 0.875rem;">
+                        GDG On Campus EUE - Workshop Management System
+                    </p>
+                </div>
+                <div>
+                    <p style="margin: 0; font-size: 0.75rem; opacity: 0.8;">
+                        Academic Project by Omar Ashraf Mohammed, April 2025
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Attendees Modal -->
+    <div id="attendeesModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Workshop Attendees</h3>
+                <button class="modal-close" onclick="closeAttendeesModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="attendeesLoading" style="text-align: center; padding: var(--spacing-xl);">
+                    <div class="spinner"></div>
+                    <p>Loading attendees...</p>
+                </div>
+                <div id="attendeesList" style="display: none;">
+                    <div style="margin-bottom: var(--spacing-lg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
+                            <div>
+                                <strong id="attendeesCount">0</strong> confirmed attendees
+                            </div>
+                            <div class="btn-group" style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+                                <button class="btn btn-outline btn-sm" onclick="exportAttendeesList()">
+                                    <span class="material-icon">download</span>
+                                    Export List
+                                </button>
+                                <button class="btn btn-outline btn-sm" onclick="exportToCalendar()">
+                                    <span class="material-icon">calendar_today</span>
+                                    Export to Calendar
+                                </button>
+                            </div>
+                        </div>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Ticket Type</th>
+                                    <th>Booked At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendeesTableBody">
+                                <!-- Attendees will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="attendeesError" style="display: none; text-align: center; padding: var(--spacing-xl);">
+                    <div style="margin-bottom: var(--spacing-md);">
+                        <span class="material-icon" style="font-size: 2rem; color: var(--google-grey-400);">error_outline</span>
+                    </div>
+                    <p style="color: var(--google-red); margin-bottom: var(--spacing-md);">Failed to load attendees. Please try again.</p>
+                    <button class="btn btn-primary" onclick="retryLoadAttendees()">
+                        <span class="material-icon">refresh</span>
+                        Retry
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            max-width: 80%;
+            max-height: 80%;
+            width: 800px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--google-grey-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: var(--spacing-lg);
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--google-grey-600);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-md);
+        }
+
+        .table th,
+        .table td {
+            padding: var(--spacing-sm);
+            text-align: left;
+            border-bottom: 1px solid var(--google-grey-200);
+        }
+
+        .table th {
+            background: var(--google-grey-50);
+            font-weight: 600;
+        }
+
+        .spinner {
+            border: 3px solid var(--google-grey-200);
+            border-top: 3px solid var(--google-blue);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--spacing-md);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- Dashboard JavaScript -->
+    <script>
+        // CSRF token for AJAX requests
+        const csrfToken = '<%= csrfToken %>';
+        let currentEventId = null;
+        
+        // Publish event functionality - moved from inline handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle publish button clicks
+            document.querySelectorAll('.publish-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    publishEvent(this.getAttribute('data-event-id'));
+                });
+            });
+            
+            // Handle view attendees button clicks
+            document.querySelectorAll('.view-attendees-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const eventId = this.getAttribute('data-event-id');
+                    viewAttendees(eventId);
+                });
+            });
+        });
+        
+        /**
+         * Publish a draft workshop
+         * @param {number} eventId - The event ID to publish
+         */
+        async function publishEvent(eventId) {
+            const button = document.querySelector(`[data-event-id="${eventId}"]`);
+            const originalText = button.textContent;
+            
+            try {
+                // Update button state
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner"></span> Publishing...';
+                
+                // Send publish request
+                const response = await fetch(`/events/publish/${eventId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success and reload page
+                    button.innerHTML = '✓ Published';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-primary');
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error(result.error || 'Failed to publish workshop');
+                }
+                
+            } catch (error) {
+                console.error('Publish error:', error);
+                
+                // Reset button and show error
+                button.disabled = false;
+                button.textContent = originalText;
+                
+                // Show error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-error';
+                errorDiv.style.marginTop = 'var(--spacing-md)';
+                errorDiv.textContent = `Failed to publish workshop: ${error.message}`;
+                
+                button.closest('.event-card').appendChild(errorDiv);
+                
+                // Remove error after 5 seconds
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            }
+        }
+        
+        // Attendees functionality
+        function viewAttendees(eventId) {
+            currentEventId = eventId;
+            const modal = document.getElementById('attendeesModal');
+            const loading = document.getElementById('attendeesLoading');
+            const list = document.getElementById('attendeesList');
+            const error = document.getElementById('attendeesError');
+
+            // Show modal and loading state
+            modal.style.display = 'flex';
+            loading.style.display = 'block';
+            list.style.display = 'none';
+            error.style.display = 'none';
+
+            // Fetch attendees
+            fetch(`/events/${eventId}/attendees`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayAttendees(data.attendees, data.count);
+                    } else {
+                        throw new Error(data.error || 'Failed to load attendees');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading attendees:', err);
+                    loading.style.display = 'none';
+                    error.style.display = 'block';
+                });
+        }
+
+        function displayAttendees(attendees, count) {
+            const loading = document.getElementById('attendeesLoading');
+            const list = document.getElementById('attendeesList');
+            const countElement = document.getElementById('attendeesCount');
+            const tbody = document.getElementById('attendeesTableBody');
+
+            loading.style.display = 'none';
+            list.style.display = 'block';
+            
+            countElement.textContent = count;
+            
+            // Clear existing rows
+            tbody.innerHTML = '';
+
+            if (attendees.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: var(--spacing-xl);">No attendees registered yet</td></tr>';
+            } else {
+                attendees.forEach(attendee => {
+                    const row = document.createElement('tr');
+                    
+                    // Format the booking date properly
+                    let formattedDate = 'Unknown';
+                    if (attendee.booked_at) {
+                        try {
+                            const date = new Date(attendee.booked_at);
+                            if (!isNaN(date.getTime())) {
+                                formattedDate = date.toLocaleDateString('en-GB', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Date formatting error:', e);
+                        }
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${attendee.attendee_name}</td>
+                        <td>${attendee.attendee_email}</td>
+                        <td>${attendee.type_name || 'Standard'}</td>
+                        <td>${formattedDate}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+        }
+
+        function closeAttendeesModal() {
+            document.getElementById('attendeesModal').style.display = 'none';
+        }
+
+        function retryLoadAttendees() {
+            if (currentEventId) {
+                viewAttendees(currentEventId);
+            }
+        }
+
+        function exportAttendeesList() {
+            if (!currentEventId) return;
+
+            const attendees = Array.from(document.querySelectorAll('#attendeesTableBody tr')).map(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length === 4) {
+                    return {
+                        name: cells[0].textContent,
+                        email: cells[1].textContent,
+                        ticketType: cells[2].textContent,
+                        bookedAt: cells[3].textContent
+                    };
+                }
+            }).filter(Boolean);
+
+            // Create CSV content
+            const csvContent = [
+                'Name,Email,Ticket Type,Booked At',
+                ...attendees.map(a => `"${a.name}","${a.email}","${a.ticketType}","${a.bookedAt}"`)
+            ].join('\n');
+
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `workshop-${currentEventId}-attendees.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function exportToCalendar() {
+            if (!currentEventId) return;
+            
+            // Open calendar export endpoint
+            window.open(`/events/${currentEventId}/export-calendar`, '_blank');
+        }
+
+        // Auto-refresh data every 30 seconds for real-time updates
+        let refreshInterval;
+        
+        function startAutoRefresh() {
+            refreshInterval = setInterval(() => {
+                // Only refresh if page is visible
+                if (!document.hidden) {
+                    window.location.reload();
+                }
+            }, 30000); // 30 seconds
+        }
+        
+        function stopAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        }
+        
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopAutoRefresh();
+            } else {
+                startAutoRefresh();
+            }
+        });
+        
+        // Start auto-refresh when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            startAutoRefresh();
+            
+            // Add click tracking for analytics
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    console.log('Dashboard action:', e.target.textContent.trim());
+                });
+            });
+            
+            console.log('GDG EUE Dashboard loaded successfully');
+        });
+        
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            stopAutoRefresh();
+        });
+    </script>
+</body>
+</html>

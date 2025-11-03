@@ -1,0 +1,38 @@
+{
+  "name": "gdg-eue-event-manager",
+  "version": "1.0.0",
+  "description": "GDG On Campus EUE Event Manager - Professional Workshop Management System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-db": "cat db_schema.sql | sqlite3 database.db #build anew database from the sql file",
+    "clean-db": "rm database.db #remove the old database",
+    "build-db-win": "sqlite3 database.db < db_schema.sql",
+    "clean-db-win": "del database.db",
+    "start": "node index.js",
+    "dev": "node index.js",
+    "seed-db": "node scripts/seed-database.js",
+    "reset-db": "npm run clean-db && npm run build-db && npm run seed-db"
+  },
+  "author": "Omar Ashraf Mohammed",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "csurf": "^1.11.0",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "sqlite3": "^5.1.2"
+  },
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
+  }
+}

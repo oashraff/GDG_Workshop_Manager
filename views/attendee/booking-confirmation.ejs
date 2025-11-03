@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Booking Confirmation - GDG EUE Workshop Management">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234285f4'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='sans-serif' font-size='40' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title><%= title || 'Booking Confirmed - GDG EUE' %></title>
+    
+    <!-- Security headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">G</div>
+                GDG On Campus EUE
+            </a>
+            
+            <nav class="nav">
+                <a href="/attendee" class="nav-link">
+                    <span class="material-icon">workshop</span>
+                    Browse Workshops
+                </a>
+                <a href="/organiser" class="nav-link">
+                    <span class="material-icon">admin_panel_settings</span>
+                    Organiser Access
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Success Hero Section -->
+        <section style="background: linear-gradient(135deg, var(--google-green), var(--google-blue)); color: white; padding: var(--spacing-3xl) 0; text-align: center;">
+            <div class="container">
+                <div style="margin-bottom: var(--spacing-xl);">
+                    <div style="font-size: 4rem; margin-bottom: var(--spacing-md); animation: bounce 1s ease-in-out;">
+                        <span class="material-icon" style="font-size: 4rem; color: white;">check_circle</span>
+                    </div>
+                    <h1 style="color: white; font-size: 2.5rem; margin-bottom: var(--spacing-md);">
+                        Booking Confirmed!
+                    </h1>
+                    <p style="font-size: 1.25rem; opacity: 0.9; max-width: 600px; margin: 0 auto;">
+                        Your spot has been successfully reserved for this workshop. We're excited to see you there!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking Details Section -->
+        <section style="padding: var(--spacing-3xl) 0; background: var(--google-grey-50);">
+            <div class="container">
+                <div class="grid grid-2" style="gap: var(--spacing-xl); align-items: start;">
+                    <!-- Workshop Details -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>
+                                <span class="material-icon">event</span>
+                                Workshop Details
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div style="margin-bottom: var(--spacing-lg);">
+                                <h3 style="color: var(--google-grey-900); margin-bottom: var(--spacing-sm);">
+                                    <%= booking.title %>
+                                </h3>
+                                <p style="color: var(--google-grey-600); font-size: 0.875rem;">
+                                    <%= booking.description ? booking.description.substring(0, 150) + (booking.description.length > 150 ? '...' : '') : 'Join us for this exciting workshop!' %>
+                                </p>
+                            </div>
+                            
+                            <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--google-grey-200);">
+                                    <span style="display: flex; align-items: center; gap: var(--spacing-xs); color: var(--google-grey-600); font-weight: 500;">
+                                        <span class="material-icon small">schedule</span>
+                                        Date & Time
+                                    </span>
+                                    <span style="color: var(--google-grey-900); font-weight: 500;">
+                                        <%= formatDate(booking.event_date) %><br>
+                                        <span style="font-size: 0.875rem; color: var(--google-grey-600);">
+                                            <%= formatTime(booking.event_date) %>
+                                        </span>
+                                    </span>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--google-grey-200);">
+                                    <span style="display: flex; align-items: center; gap: var(--spacing-xs); color: var(--google-grey-600); font-weight: 500;">
+                                        <span class="material-icon small">timer</span>
+                                        Duration
+                                    </span>
+                                    <span style="color: var(--google-grey-900); font-weight: 500;">
+                                        <%= formatDuration(booking.duration_minutes) %>
+                                    </span>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--google-grey-200);">
+                                    <span style="display: flex; align-items: center; gap: var(--spacing-xs); color: var(--google-grey-600); font-weight: 500;">
+                                        <span class="material-icon small">location_on</span>
+                                        Location
+                                    </span>
+                                    <span style="color: var(--google-grey-900); font-weight: 500; text-align: right;">
+                                        EUE Campus<br>
+                                        <span style="font-size: 0.875rem; color: var(--google-grey-600);">
+                                            Room details via email
+                                        </span>
+                                    </span>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) 0;">
+                                    <span style="display: flex; align-items: center; gap: var(--spacing-xs); color: var(--google-grey-600); font-weight: 500;">
+                                        <span class="material-icon small">confirmation_number</span>
+                                        Ticket Type
+                                    </span>
+                                    <span style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                                        <span style="color: var(--google-grey-900); font-weight: 500;">
+                                            <%= booking.ticket_type_name %>
+                                        </span>
+                                        <% if (booking.price === 0 || booking.ticket_type_name.toLowerCase().includes('member')) { %>
+                                            <span class="badge badge-success">FREE</span>
+                                        <% } else { %>
+                                            <span class="badge badge-primary">£<%= booking.price.toFixed(2) %></span>
+                                        <% } %>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Attendee Information -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>
+                                <span class="material-icon">person</span>
+                                Attendee Information
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--google-grey-200);">
+                                    <span style="color: var(--google-grey-600); font-weight: 500;">Name</span>
+                                    <span style="color: var(--google-grey-900); font-weight: 500;">
+                                        <%= booking.attendee_name %>
+                                    </span>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--google-grey-200);">
+                                    <span style="color: var(--google-grey-600); font-weight: 500;">Email</span>
+                                    <span style="color: var(--google-grey-900); font-weight: 500;">
+                                        <%= booking.attendee_email %>
+                                        <% if (booking.attendee_email.includes('@uol.eue.edu.eg')) { %>
+                                            <br><span class="badge badge-success" style="font-size: 0.75rem; margin-top: var(--spacing-xs);">GDG Member</span>
+                                        <% } %>
+                                    </span>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--google-grey-200);">
+                                    <span style="color: var(--google-grey-600); font-weight: 500;">Booking Date</span>
+                                    <span style="color: var(--google-grey-900); font-weight: 500;">
+                                        <%= formatDate(booking.booking_date) %>
+                                    </span>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-sm) 0;">
+                                    <span style="color: var(--google-grey-600); font-weight: 500;">Status</span>
+                                    <span class="badge badge-success">Confirmed</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Important Notice -->
+                            <div style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--google-blue-50); border-radius: var(--border-radius-md); border-left: 4px solid var(--google-blue);">
+                                <div style="display: flex; align-items: flex-start; gap: var(--spacing-sm);">
+                                    <span class="material-icon" style="color: var(--google-blue); font-size: 1.25rem;">info</span>
+                                    <div>
+                                        <h4 style="color: var(--google-blue-700); margin-bottom: var(--spacing-xs);">Important</h4>
+                                        <p style="color: var(--google-blue-700); font-size: 0.875rem; margin: 0;">
+                                            A confirmation email has been sent to your registered email address with additional details and instructions. <strong><em>(For demenstration purposes, this email is not sent in this version.)</em></strong>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Steps Section -->
+        <section style="padding: var(--spacing-3xl) 0; background: white;">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: var(--spacing-xl);">What's Next?</h2>
+                
+                <div class="grid grid-3">
+                    <div class="card hover-lift">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: var(--spacing-md); color: var(--google-blue);">
+                                <span class="material-icon" style="font-size: 2.5rem;">email</span>
+                            </div>
+                            <h3 style="margin-bottom: var(--spacing-sm);">Check Your Email</h3>
+                            <p style="color: var(--google-grey-600); margin: 0;">
+                                We've sent a confirmation email to <strong><%= booking.attendee_email %></strong> with all the workshop details and preparation instructions.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="card hover-lift">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: var(--spacing-md); color: var(--google-green);">
+                                <span class="material-icon" style="font-size: 2.5rem;">calendar_today</span>
+                            </div>
+                            <h3 style="margin-bottom: var(--spacing-sm);">Add to Calendar</h3>
+                            <p style="color: var(--google-grey-600); margin-bottom: var(--spacing-md);">
+                                Don't forget to add this workshop to your calendar so you don't miss it!
+                            </p>
+                            <button onclick="downloadCalendar()" class="btn btn-outline btn-small">
+                                <span class="material-icon">download</span>
+                                Download .ics
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card hover-lift">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; margin-bottom: var(--spacing-md); color: var(--google-yellow-600);">
+                                <span class="material-icon" style="font-size: 2.5rem;">backpack</span>
+                            </div>
+                            <h3 style="margin-bottom: var(--spacing-sm);">Prepare for the Workshop</h3>
+                            <p style="color: var(--google-grey-600); margin: 0;">
+                                Bring your laptop with charger, notebook for taking notes, and a positive attitude for learning!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Buttons Section -->
+        <section style="padding: var(--spacing-xl) 0; background: var(--google-grey-50);">
+            <div class="container text-center">
+                <div style="display: flex; justify-content: center; gap: var(--spacing-lg); flex-wrap: wrap; margin-bottom: var(--spacing-xl);">
+                    <a href="/attendee" class="btn btn-primary btn-large">
+                        <span class="material-icon">explore</span>
+                        Discover More Workshops
+                    </a>
+                    <a href="/attendee/event/<%= booking.event_id %>" class="btn btn-outline btn-large">
+                        <span class="material-icon">info</span>
+                        View Workshop Details
+                    </a>
+                    <button onclick="shareWorkshop()" class="btn btn-secondary btn-large">
+                        <span class="material-icon">share</span>
+                        Share This Workshop
+                    </button>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="card" style="max-width: 600px; margin: 0 auto;">
+                    <div class="card-header">
+                        <h3>
+                            <span class="material-icon">support_agent</span>
+                            Need Help?
+                        </h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <p style="color: var(--google-grey-600); margin-bottom: var(--spacing-lg);">
+                            If you have any questions about this workshop or need to modify your booking, our support team is here to help.
+                        </p>
+                        <div style="display: flex; justify-content: center; gap: var(--spacing-lg); flex-wrap: wrap;">
+                            <a href="mailto:gdg@uol.eue.edu.eg?subject=Booking Support - #GDG-<%= booking.id.toString().padStart(4, '0') %>" class="btn btn-outline">
+                                <span class="material-icon">email</span>
+                                Contact Support
+                            </a>
+                            <a href="https://developers.google.com/community/gdg" target="_blank" rel="noopener" class="btn btn-outline">
+                                <span class="material-icon">help</span>
+                                Visit Help Center
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="flex flex-between">
+                <div>
+                    <p style="margin: 0; font-size: 0.875rem;">
+                        GDG On Campus EUE - Educational Workshop Series
+                    </p>
+                </div>
+                <div>
+                    <p style="margin: 0; font-size: 0.75rem; opacity: 0.8;">
+                        Academic Project by Omar Ashraf Mohammed, April 2025
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Enhanced Functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add bounce animation for success icon
+            const successIcon = document.querySelector('.material-icon[style*="font-size: 4rem"]');
+            if (successIcon) {
+                successIcon.style.animation = 'bounce 2s ease-in-out';
+            }
+            
+            console.log('Booking confirmation page loaded successfully');
+        });
+
+        // Calendar download functionality
+        function downloadCalendar() {
+            const event = {
+                title: '<%= booking.title.replace(/'/g, "\\'") %>',
+                description: 'Workshop booked through GDG EUE. Booking ref: #GDG-<%= booking.id.toString().padStart(4, "0") %>',
+                location: 'GDG EUE Campus, Computer Science Building',
+                startDate: new Date('<%= booking.event_date %>'),
+                duration: <%= booking.duration_minutes %>
+            };
+            
+            const endDate = new Date(event.startDate.getTime() + (event.duration * 60000));
+            
+            // Format dates for ICS
+            const formatDate = (date) => {
+                return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            };
+            
+            const icsContent = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//GDG EUE//Workshop Manager//EN',
+                'BEGIN:VEVENT',
+                `UID:gdg-workshop-${<%= booking.id %>}@uol.eue.edu.eg`,
+                `DTSTART:${formatDate(event.startDate)}`,
+                `DTEND:${formatDate(endDate)}`,
+                `SUMMARY:${event.title}`,
+                `DESCRIPTION:${event.description}`,
+                `LOCATION:${event.location}`,
+                'STATUS:CONFIRMED',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+            
+            // Create and download file
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `gdg-workshop-${<%= booking.id %>}.ics`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Calendar event downloaded successfully!', 'success');
+        }
+
+        // Share workshop functionality
+        function shareWorkshop() {
+            const shareData = {
+                title: '<%= booking.title.replace(/'/g, "\\'") %>',
+                text: 'Join me at this exciting tech workshop by GDG On Campus EUE!',
+                url: `${window.location.origin}/attendee/event/<%= booking.event_id %>`
+            };
+            
+            if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+                navigator.share(shareData).catch(err => {
+                    console.log('Share canceled or failed:', err);
+                    fallbackShare(shareData.url);
+                });
+            } else {
+                fallbackShare(shareData.url);
+            }
+        }
+
+        function fallbackShare(url) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showNotification('Workshop link copied to clipboard!', 'success');
+                }).catch(() => {
+                    prompt('Copy this link to share the workshop:', url);
+                });
+            } else {
+                prompt('Copy this link to share the workshop:', url);
+            }
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <span class="material-icon">${type === 'success' ? 'check_circle' : 'info'}</span>
+                ${message}
+            `;
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: var(--spacing-md);
+                border-radius: var(--border-radius-md);
+                color: white;
+                font-weight: 500;
+                z-index: 1100;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+                max-width: 350px;
+                box-shadow: var(--shadow-lg);
+                display: flex;
+                align-items: center;
+                gap: var(--spacing-sm);
+                background-color: ${type === 'success' ? 'var(--google-green)' : 'var(--google-blue)'};
+            `;
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Animate out and remove
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+    </script>
+
+    <!-- Add custom animations -->
+    <style>
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40%, 43% {
+                transform: translateY(-15px);
+            }
+            70% {
+                transform: translateY(-7px);
+            }
+            90% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .hover-lift {
+            transition: transform var(--transition-normal);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Ensure responsive design */
+        @media (max-width: 768px) {
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .flex {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn-large {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</body>
+</html>

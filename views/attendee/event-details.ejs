@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<%= event.title %> - GDG EUE Workshop">
+    <meta name="keywords" content="GDG, workshop, <%= event.tech_stack ? event.tech_stack.join(', ') : '' %>">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234285f4'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='sans-serif' font-size='40' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title><%= event.title %> - GDG EUE Workshop</title>
+    
+    <!-- Open Graph Meta Tags for Social Sharing -->
+    <meta property="og:title" content="<%= event.title %> - GDG EUE Workshop">
+    <meta property="og:description" content="<%= event.description || 'Join this exciting tech workshop at GDG On Campus EUE' %>">
+    <meta property="og:type" content="event">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">G</div>
+                GDG On Campus EUE
+            </a>
+            
+            <nav class="nav">
+                <a href="/attendee" class="nav-link">← All Workshops</a>
+                <a href="/" class="nav-link">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Workshop Header -->
+            <div class="card" style="margin-bottom: var(--spacing-xl); background: linear-gradient(135deg, var(--google-blue-50), var(--google-green-50));">
+                <div class="card-body" style="padding: var(--spacing-xl);">
+                    <div class="grid grid-2" style="align-items: center;">
+                        <div>
+                            <!-- Tech Stack Tags -->
+                            <div style="margin-bottom: var(--spacing-md);">
+                                <% if (event.tech_stack && event.tech_stack.length > 0) { %>
+                                    <% event.tech_stack.forEach(tech => { %>
+                                        <span class="tech-tag <%= tech.toLowerCase() %>" style="margin-right: var(--spacing-xs);"><%= tech %></span>
+                                    <% }); %>
+                                <% } %>
+                            </div>
+                            
+                            <!-- Workshop Title -->
+                            <h1 style="margin-bottom: var(--spacing-md); color: var(--google-grey-800);">
+                                <%= event.title %>
+                            </h1>
+                            
+                            <!-- Skill Level -->
+                            <% 
+                            const skillLevels = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced' };
+                            const skillClasses = { 1: 'skill-beginner', 2: 'skill-intermediate', 3: 'skill-advanced' };
+                            %>
+                            <span class="skill-badge <%= skillClasses[event.skill_level] %>">
+                                <%= skillLevels[event.skill_level] || 'All Levels' %>
+                            </span>
+                        </div>
+                        
+                        <!-- Quick Info -->
+                        <div style="text-align: right;">
+                            <div style="background: white; padding: var(--spacing-lg); border-radius: var(--border-radius-lg); box-shadow: var(--shadow-sm);">
+                                <div style="margin-bottom: var(--spacing-md);">
+                                    <div style="font-size: 0.875rem; color: var(--google-grey-600);">Workshop Date</div>
+                                    <div style="font-weight: 600; color: var(--google-grey-800);">
+                                        <%= formatDate(event.event_date) %>
+                                    </div>
+                                    <div style="color: var(--google-grey-600);">
+                                        <%= formatTime(event.event_date) %>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-bottom: var(--spacing-md);">
+                                    <div style="font-size: 0.875rem; color: var(--google-grey-600);">Duration</div>
+                                    <div style="font-weight: 600; color: var(--google-grey-800);">
+                                        <%= Math.floor((event.duration_minutes || 90) / 60) %>h <%= (event.duration_minutes || 90) % 60 %>m
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div style="font-size: 0.875rem; color: var(--google-grey-600);">Available Seats</div>
+                                    <div style="font-weight: 600; color: var(--google-green);">
+                                        <%= (event.max_attendees || 50) - (event.confirmed_bookings || 0) %> remaining
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content Grid -->
+            <div class="grid grid-3" style="gap: var(--spacing-xl);">
+                <!-- Workshop Details -->
+                <div style="grid-column: span 2;">
+                    <!-- Description -->
+                    <div class="card" style="margin-bottom: var(--spacing-lg);">
+                        <div class="card-header">
+                            <h2>About This Workshop</h2>
+                        </div>
+                        <div class="card-body">
+                            <% if (event.description) { %>
+                                <p style="line-height: 1.6; margin-bottom: var(--spacing-lg);">
+                                    <%= event.description %>
+                                </p>
+                            <% } else { %>
+                                <p style="line-height: 1.6; margin-bottom: var(--spacing-lg); color: var(--google-grey-600);">
+                                    Join us for this hands-on workshop where you'll learn cutting-edge technologies and build practical projects with guidance from experienced developers.
+                                </p>
+                            <% } %>
+                            
+                            <!-- Prerequisites -->
+                            <div style="background: var(--google-grey-50); padding: var(--spacing-md); border-radius: var(--border-radius-md); margin-bottom: var(--spacing-lg);">
+                                <h4 style="margin-bottom: var(--spacing-sm); color: var(--google-grey-800);">Prerequisites</h4>
+                                <ul style="margin: 0; padding-left: var(--spacing-md);">
+                                    <% if (event.skill_level === 1) { %>
+                                        <li>No prior programming experience required</li>
+                                        <li>Bring a laptop with internet connection</li>
+                                        <li>Enthusiasm to learn new technologies</li>
+                                    <% } else if (event.skill_level === 2) { %>
+                                        <li>Basic programming knowledge recommended</li>
+                                        <li>Familiarity with web development concepts</li>
+                                        <li>Laptop with development environment setup</li>
+                                    <% } else { %>
+                                        <li>Strong programming background required</li>
+                                        <li>Experience with relevant technology stack</li>
+                                        <li>Development environment pre-configured</li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                            
+                            <!-- What You'll Learn -->
+                            <div>
+                                <h4 style="margin-bottom: var(--spacing-sm); color: var(--google-grey-800);">What You'll Learn</h4>
+                                <ul style="margin: 0; padding-left: var(--spacing-md);">
+                                    <% if (event.tech_stack && event.tech_stack.includes('Firebase')) { %>
+                                        <li>Firebase authentication and real-time database</li>
+                                        <li>Cloud Functions for serverless backend</li>
+                                    <% } %>
+                                    <% if (event.tech_stack && event.tech_stack.includes('Flutter')) { %>
+                                        <li>Cross-platform mobile app development</li>
+                                        <li>State management and responsive UI</li>
+                                    <% } %>
+                                    <% if (event.tech_stack && event.tech_stack.includes('Android')) { %>
+                                        <li>Native Android development with Kotlin</li>
+                                        <li>Material Design implementation</li>
+                                    <% } %>
+                                    <li>Best practices and industry standards</li>
+                                    <li>Hands-on project development</li>
+                                    <li>Q&A with experienced developers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Instructors -->
+                    <div class="card" style="margin-bottom: var(--spacing-lg);">
+                        <div class="card-header">
+                            <h2>Workshop Leaders</h2>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: flex; align-items: center; margin-bottom: var(--spacing-lg);">
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--google-blue); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem; margin-right: var(--spacing-md);">
+                                    G
+                                </div>
+                                <div>
+                                    <h4 style="margin-bottom: var(--spacing-xs);">GDG EUE Organiser Team</h4>
+                                    <p style="color: var(--google-grey-600); margin: 0;">
+                                        Experienced developers and Google technology enthusiasts
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div style="background: var(--google-grey-50); padding: var(--spacing-md); border-radius: var(--border-radius-md);">
+                                <p style="margin: 0; font-size: 0.875rem; color: var(--google-grey-700);">
+                                    Our team includes Google Developer Experts, certified professionals, and passionate students who are experts in their respective technology stacks.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workshop Details -->
+                    <div class="card" style="margin-bottom: var(--spacing-lg);">
+                        <div class="card-header" style="cursor: pointer; user-select: none;" onclick="toggleWorkshopDetails()">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 style="margin: 0; display: flex; align-items: center; gap: var(--spacing-xs);">
+                                    <span class="material-icon">info</span>
+                                    Workshop Details
+                                </h3>
+                                <span class="material-icon" id="workshop-details-icon" style="transition: transform 0.3s ease; color: var(--google-grey-600);">
+                                    expand_more
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body" id="workshop-details-content" style="display: none; border-top: 1px solid var(--google-grey-200);">
+                            <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+                                <div>
+                                    <div style="font-weight: 500; margin-bottom: var(--spacing-xs); display: flex; align-items: center; gap: var(--spacing-xs);">
+                                        <span class="material-icon small">location_on</span>
+                                        Location
+                                    </div>
+                                    <div style="color: var(--google-grey-600);">
+                                        • EUE Campus<br>
+                                        • Computer Science Building<br>
+                                        <em>Room will be announced via email</em>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div style="font-weight: 500; margin-bottom: var(--spacing-xs); display: flex; align-items: center; gap: var(--spacing-xs);">
+                                        <span class="material-icon small">backpack</span>
+                                        What to Bring
+                                    </div>
+                                    <div style="color: var(--google-grey-600);">
+                                        • Laptop with charger<br>
+                                        • Notebook for taking notes<br>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Booking Panel -->
+                <div>
+                    <!-- Booking Form -->
+                    <div class="card" style="position: sticky; top: var(--spacing-lg);">
+                        <div class="card-header">
+                            <h3>
+                                <span class="material-icon">event_seat</span>
+                                Book Your Spot
+                            </h3>
+                            <div style="font-size: 0.875rem; color: var(--google-grey-600);">
+                                Secure your place in this workshop
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Availability Status -->
+                            <div style="margin-bottom: var(--spacing-lg);">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-sm); align-items: center;">
+                                    <span style="display: flex; align-items: center; gap: var(--spacing-xs);">
+                                        <span class="material-icon small">group</span>
+                                        Attendance
+                                    </span>
+                                    <span><%= event.confirmed_bookings || 0 %>/<%= event.max_attendees || 50 %></span>
+                                </div>
+                                <div class="progress">
+                                    <% const progressPercent = ((event.confirmed_bookings || 0) / (event.max_attendees || 50)) * 100; %>
+                                    <div class="progress-fill" style="width: <%= Math.min(progressPercent, 100) %>%;"></div>
+                                </div>
+                                <div style="margin-top: var(--spacing-xs); font-size: 0.875rem; color: var(--google-grey-600);">
+                                    <% if (progressPercent >= 100) { %>
+                                        <span class="material-icon small">event_busy</span>
+                                        Workshop is fully booked
+                                    <% } else if (progressPercent >= 85) { %>
+                                        <span class="material-icon small">trending_up</span>
+                                        Only a few spots remaining!
+                                    <% } else { %>
+                                        <span class="material-icon small">event_available</span>
+                                        Plenty of spots available
+                                    <% } %>
+                                </div>
+                            </div>
+                            
+                            <!-- Booking Form -->
+                            <% if ((event.confirmed_bookings || 0) < (event.max_attendees || 50)) { %>
+                                <form action="/attendee/book/<%= event.id %>" method="POST" id="booking-form">
+                                    <!-- CSRF Protection -->
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    
+                                    <!-- Attendee Name -->
+                                    <div class="form-group">
+                                        <label for="attendee_name" class="form-label">
+                                            Full Name <span style="color: var(--google-red);">*</span>
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            id="attendee_name" 
+                                            name="attendee_name" 
+                                            class="form-control" 
+                                            required 
+                                            placeholder="Enter your full name"
+                                        >
+                                    </div>
+                                    
+                                    <!-- Email -->
+                                    <div class="form-group">
+                                        <label for="attendee_email" class="form-label">
+                                            Email Address <span style="color: var(--google-red);">*</span>
+                                        </label>
+                                        <input 
+                                            type="email" 
+                                            id="attendee_email" 
+                                            name="attendee_email" 
+                                            class="form-control" 
+                                            required 
+                                            placeholder="your.email@domain.com"
+                                            aria-describedby="email-help"
+                                        >
+                                        <div id="email-help" class="form-text">
+                                            You'll receive confirmation and workshop details here
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- GDG Member ID -->
+                                    <div class="form-group">
+                                        <label for="gdg_member_id" class="form-label">
+                                            GDG Member Email (Optional)
+                                        </label>
+                                        <input 
+                                            type="email" 
+                                            id="gdg_member_id" 
+                                            name="gdg_member_id" 
+                                            class="form-control" 
+                                            placeholder="member@uol.eue.edu.eg"
+                                            pattern=".*@uol\.eue\.edu\.eg$"
+                                            aria-describedby="member-help"
+                                        >
+                                        <div id="member-help" class="form-text">
+                                            GDG members get free access to workshops
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Ticket Type Selection -->
+                                    <div class="form-group">
+                                        <label class="form-label">Ticket Type</label>
+                                        <div class="ticket-options">
+                                            <% if (event.ticket_types && event.ticket_types.length > 0) { %>
+                                                <% event.ticket_types.forEach((ticket, index) => { %>
+                                                    <div class="form-check">
+                                                        <input 
+                                                            type="radio" 
+                                                            id="ticket_<%= ticket.id %>" 
+                                                            name="ticket_type_id" 
+                                                            value="<%= ticket.id %>" 
+                                                            class="form-check-input"
+                                                            <%= ticket.is_member_only ? 'disabled' : '' %>
+                                                            <%= (!ticket.is_member_only && index === 0) || (event.ticket_types.length === 1) ? 'checked' : '' %>
+                                                        >
+                                                        <label for="ticket_<%= ticket.id %>" class="form-check-label">
+                                                            <div>
+                                                                <div style="font-weight: 500;"><%= ticket.name %></div>
+                                                                <div style="font-size: 0.875rem; color: var(--google-grey-600);">
+                                                                    <% if (ticket.is_member_only) { %>
+                                                                        Requires valid @uol.eue.edu.eg email
+                                                                    <% } else { %>
+                                                                        Open to all participants
+                                                                    <% } %>
+                                                                </div>
+                                                                <% if (ticket.available_tickets <= 0) { %>
+                                                                    <div style="font-size: 0.75rem; color: var(--google-red);">Sold Out</div>
+                                                                <% } else if (ticket.available_tickets <= 5) { %>
+                                                                    <div style="font-size: 0.75rem; color: var(--google-yellow-600);"><%= ticket.available_tickets %> remaining</div>
+                                                                <% } %>
+                                                            </div>
+                                                            <div style="font-weight: 600; color: <%= ticket.price > 0 ? 'var(--google-blue)' : 'var(--google-green)' %>;">
+                                                                <%= ticket.price > 0 ? '£' + ticket.price : 'Free' %>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <!-- Fallback ticket option -->
+                                                <div class="form-check">
+                                                    <input 
+                                                        type="radio" 
+                                                        id="ticket_default" 
+                                                        name="ticket_type_id" 
+                                                        value="1" 
+                                                        class="form-check-input"
+                                                        checked
+                                                    >
+                                                    <label for="ticket_default" class="form-check-label">
+                                                        <div>
+                                                            <div style="font-weight: 500;">General Admission</div>
+                                                            <div style="font-size: 0.875rem; color: var(--google-grey-600);">
+                                                                Standard workshop ticket
+                                                            </div>
+                                                        </div>
+                                                        <div style="font-weight: 600; color: var(--google-green);">
+                                                            Free
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Privacy Consent -->
+                                    <div class="form-check" style="margin-top: var(--spacing-lg);">
+                                        <input 
+                                            type="checkbox" 
+                                            id="privacy_consent" 
+                                            name="privacy_consent" 
+                                            class="form-check-input"
+                                            required
+                                        >
+                                        <label for="privacy_consent" class="form-check-label">
+                                            I consent to GDG EUE processing my personal data for workshop management purposes <span style="color: var(--google-red);">*</span>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Submit Button -->
+                                    <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">
+                                        Reserve Your Spot
+                                    </button>
+                                </form>
+                            <% } else { %>
+                                <!-- Waitlist Option -->
+                                <div style="text-align: center; padding: var(--spacing-lg); background: var(--google-grey-50); border-radius: var(--border-radius-md);">
+                                    <h4 style="color: var(--google-grey-700); margin-bottom: var(--spacing-sm);">Workshop Full</h4>
+                                    <p style="color: var(--google-grey-600); margin-bottom: var(--spacing-lg);">
+                                        This workshop has reached capacity, but you can join the waitlist.
+                                    </p>
+                                    <button class="btn btn-outline" id="join-waitlist-btn">
+                                        Join Waitlist
+                                    </button>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="flex flex-between">
+                <div>
+                    <p style="margin: 0; font-size: 0.875rem;">
+                        GDG On Campus EUE - Educational Workshop Series
+                    </p>
+                </div>
+                <div>
+                    <p style="margin: 0; font-size: 0.75rem; opacity: 0.8;">
+                        Academic Project by Omar Ashraf Mohammed, April 2025
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Booking Enhancement -->
+    <script>
+        // Add this function to handle the dropdown toggle
+        function toggleWorkshopDetails() {
+            const content = document.getElementById('workshop-details-content');
+            const icon = document.getElementById('workshop-details-icon');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+                icon.textContent = 'expand_less';
+            } else {
+                content.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+                icon.textContent = 'expand_more';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const bookingForm = document.getElementById('booking-form');
+            const gdgMemberInput = document.getElementById('gdg_member_id');
+            
+            if (bookingForm) {
+                // Enable GDG member ticket when valid email is entered
+                gdgMemberInput.addEventListener('input', function() {
+                    const email = this.value.trim();
+                    const isValidGdgEmail = email.match(/^[^\s@]+@uol\.eue\.edu\.eg$/);
+                    
+                    // Find member and standard tickets
+                    const allTickets = document.querySelectorAll('input[name="ticket_type_id"]');
+                    let memberTicket = null;
+                    let standardTicket = null;
+                    
+                    allTickets.forEach(ticket => {
+                        const label = document.querySelector(`label[for="${ticket.id}"]`);
+                        if (label) {
+                            const labelText = label.textContent.toLowerCase();
+                            if (labelText.includes('member') || labelText.includes('gdg')) {
+                                memberTicket = ticket;
+                            } else if (labelText.includes('standard') || labelText.includes('general')) {
+                                standardTicket = ticket;
+                            }
+                        }
+                    });
+                    
+                    if (memberTicket) {
+                        if (isValidGdgEmail) {
+                            memberTicket.disabled = false;
+                            memberTicket.checked = true;
+                            if (standardTicket) standardTicket.checked = false;
+                            
+                            // Visual feedback
+                            this.style.borderColor = 'var(--google-green)';
+                            document.getElementById('member-help').textContent = 'Valid GDG member email - free ticket applied!';
+                            document.getElementById('member-help').style.color = 'var(--google-green)';
+                        } else {
+                            memberTicket.disabled = true;
+                            memberTicket.checked = false;
+                            if (standardTicket) standardTicket.checked = true;
+                            
+                            // Reset visual feedback
+                            this.style.borderColor = '';
+                            document.getElementById('member-help').textContent = 'GDG members get free access to workshops';
+                            document.getElementById('member-help').style.color = 'var(--google-grey-600)';
+                        }
+                    }
+                });
+                
+                // Form submission handling
+                bookingForm.addEventListener('submit', function(event) {
+                
+                    
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    const originalText = submitButton.textContent;
+                    
+                    // Show loading state
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<span class="spinner"></span> Processing Booking...';
+                    
+                    // Do NOT disable all form inputs, as this prevents _csrf and other data from being sent.
+                    // The submit button being disabled is sufficient to prevent multiple clicks.
+                    // const inputs = this.querySelectorAll('input, select, textarea');
+                    // inputs.forEach(input => input.disabled = true); 
+                    
+                    // Reset on error (if form doesn't redirect)
+                    // This timeout primarily handles re-enabling the submit button.
+                    setTimeout(() => {
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalText;
+                        // inputs.forEach(input => input.disabled = false);
+                    }, 10000);
+                });
+                
+                // Real-time validation
+                const nameInput = document.getElementById('attendee_name');
+                const emailInput = document.getElementById('attendee_email');
+                
+                nameInput.addEventListener('blur', function() {
+                    if (this.value.trim().length < 2) {
+                        this.style.borderColor = 'var(--google-red)';
+                    } else {
+                        this.style.borderColor = 'var(--google-green)';
+                    }
+                });
+                
+                emailInput.addEventListener('blur', function() {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (emailRegex.test(this.value)) {
+                        this.style.borderColor = 'var(--google-green)';
+                    } else {
+                        this.style.borderColor = 'var(--google-red)';
+                    }
+                });
+            }
+            
+            console.log('Workshop booking page loaded successfully');
+            
+            // Waitlist functionality
+            const waitlistBtn = document.getElementById('join-waitlist-btn');
+            if (waitlistBtn) {
+                waitlistBtn.addEventListener('click', function() {
+                    alert('Waitlist functionality would be implemented here for production use');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

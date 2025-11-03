@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234285f4'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='sans-serif' font-size='40' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title><%= title || 'Server Error - GDG EUE' %></title>
+</head>
+<body style="background: linear-gradient(135deg, var(--google-red-50), var(--google-yellow-50)); min-height: 100vh;">
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">G</div>
+                GDG On Campus EUE
+            </a>
+            
+            <nav class="nav">
+                <a href="/attendee" class="nav-link">Browse Workshops</a>
+                <a href="/" class="nav-link">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 500 Error Content -->
+    <main style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 80px); padding: var(--spacing-lg) 0;">
+        <div class="container text-center">
+            <div class="card" style="max-width: 600px; margin: 0 auto; box-shadow: var(--shadow-xl);">
+                <div class="card-body" style="padding: var(--spacing-3xl);">
+                    <!-- Error Icon -->
+                    <div style="font-size: 6rem; margin-bottom: var(--spacing-lg); opacity: 0.7;">
+                        <span class="material-icon" style="font-size: 6rem;">!</span>
+                    </div>
+                    
+                    <!-- Error Message -->
+                    <h1 style="color: var(--google-grey-800); margin-bottom: var(--spacing-md); font-size: 2.5rem;">
+                        Server Error
+                    </h1>
+                    
+                    <p style="color: var(--google-grey-600); margin-bottom: var(--spacing-lg); font-size: 1.125rem;">
+                        <%= message || 'An unexpected error occurred on our servers. Please try again later.' %>
+                    </p>
+                    
+                    <!-- Error Details (Development Only) -->
+                    <% if (typeof stack !== 'undefined' && stack && process.env.NODE_ENV !== 'production') { %>
+                        <details style="margin-bottom: var(--spacing-lg); text-align: left;">
+                            <summary style="cursor: pointer; font-weight: 500; color: var(--google-grey-700); margin-bottom: var(--spacing-md);">
+                                Technical Details (Development Mode)
+                            </summary>
+                            <div style="background: var(--google-grey-100); padding: var(--spacing-md); border-radius: var(--border-radius-md); font-family: monospace; font-size: 0.75rem; color: var(--google-grey-800); white-space: pre-wrap; overflow-x: auto;">
+<%= stack %>
+                            </div>
+                        </details>
+                    <% } %>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-center" style="gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                        <button id="tryAgainBtn" class="btn btn-primary btn-large">
+                            Try Again
+                        </button>
+                        <a href="/" class="btn btn-outline btn-large">
+                            Go Home
+                        </a>
+                    </div>
+                    
+                    <!-- Status Information -->
+                    <div style="border-top: 1px solid var(--google-grey-200); padding-top: var(--spacing-lg);">
+                        <h3 style="margin-bottom: var(--spacing-md); color: var(--google-grey-700);">
+                            What can you do?
+                        </h3>
+                        
+                        <div class="grid grid-2" style="gap: var(--spacing-md); text-align: left;">
+                            <div class="card" style="padding: var(--spacing-md); background: var(--google-blue-50); border: none;">
+                                <h4 style="color: var(--google-blue-700); margin-bottom: var(--spacing-sm); font-size: 1rem;">
+                                    🔄 Temporary Issue
+                                </h4>
+                                <p style="margin: 0; font-size: 0.875rem; color: var(--google-grey-700);">
+                                    This is likely a temporary problem. Please try refreshing the page or coming back in a few minutes.
+                                </p>
+                            </div>
+                            
+                            <div class="card" style="padding: var(--spacing-md); background: var(--google-green-50); border: none;">
+                                <h4 style="color: var(--google-green-700); margin-bottom: var(--spacing-sm); font-size: 1rem;">
+                                    📞 Get Help
+                                </h4>
+                                <p style="margin: 0; font-size: 0.875rem; color: var(--google-grey-700);">
+                                    If the problem persists, please contact our technical team for assistance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Support Section -->
+            <div class="card" style="max-width: 600px; margin: var(--spacing-xl) auto 0; background: var(--google-red-50); border: none;">
+                <div class="card-body text-center">
+                    <h4 style="color: var(--google-red-700); margin-bottom: var(--spacing-md);">
+                        Need Immediate Help?
+                    </h4>
+                    <p style="color: var(--google-grey-700); margin-bottom: var(--spacing-lg);">
+                        If this error is preventing you from accessing important workshop information 
+                        or completing a booking, please contact us immediately.
+                    </p>
+                    <div class="flex flex-center" style="gap: var(--spacing-md);">
+                        <a href="mailto:gdg@uol.eue.edu.eg?subject=Server Error Report&body=I encountered a server error while using the GDG EUE Event Manager.%0A%0ATime: <%= new Date().toISOString() %>%0APage: <%= typeof req !== 'undefined' && req.url ? req.url : 'unknown' %>" 
+                           class="btn btn-outline" 
+                           style="border-color: var(--google-red-600); color: var(--google-red-700);">
+                            Report Error
+                        </a>
+                        <a href="/attendee" class="btn btn-secondary">
+                            Browse Workshops
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer Notice -->
+            <div style="margin-top: var(--spacing-xl); padding: var(--spacing-md);">
+                <p style="font-size: 0.75rem; color: var(--google-grey-600); margin: 0;">
+                    GDG EUE Event Manager<br>
+                    This error has been logged and will be reviewed<br>
+                    Developed by Omar Ashraf Mohammed
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript for Error Handling and Reporting -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Error tracking
+            const errorInfo = {
+                timestamp: new Date().toISOString(),
+                url: window.location.href,
+                userAgent: navigator.userAgent,
+                referrer: document.referrer,
+                viewport: `${window.innerWidth}x${window.innerHeight}`,
+                message: '<%= typeof message !== "undefined" ? message : "Unknown error" %>'
+            };
+            
+            console.error('500 Error logged:', errorInfo);
+            
+            // Auto-retry functionality
+            let retryCount = 0;
+            const maxRetries = 3;
+            
+            function autoRetry() {
+                if (retryCount < maxRetries && navigator.onLine) {
+                    retryCount++;
+                    console.log(`Auto-retry attempt ${retryCount}/${maxRetries}`);
+                    
+                    // Show retry indicator
+                    const retryButton = document.querySelector('button[onclick*="reload"]');
+                    const originalText = retryButton.innerHTML;
+                    retryButton.innerHTML = `<span class="spinner"></span> Retrying... (${retryCount}/${maxRetries})`;
+                    retryButton.disabled = true;
+                    
+                    // Attempt retry after delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    // Show persistent error message
+                    const persistentError = document.createElement('div');
+                    persistentError.className = 'alert alert-error';
+                    persistentError.innerHTML = `
+                        <strong>Persistent Error:</strong> 
+                        The server appears to be experiencing ongoing issues. 
+                        Please try again later or contact support.
+                    `;
+                    persistentError.style.marginTop = 'var(--spacing-lg)';
+                    
+                    document.querySelector('.card-body').appendChild(persistentError);
+                }
+            }
+            
+            // Online/offline status monitoring
+            function updateConnectionStatus() {
+                const statusIndicator = document.createElement('div');
+                statusIndicator.style.position = 'fixed';
+                statusIndicator.style.top = '10px';
+                statusIndicator.style.right = '10px';
+                statusIndicator.style.padding = 'var(--spacing-xs) var(--spacing-sm)';
+                statusIndicator.style.borderRadius = 'var(--border-radius-md)';
+                statusIndicator.style.fontSize = '0.75rem';
+                statusIndicator.style.fontWeight = '500';
+                statusIndicator.style.zIndex = '1000';
+                
+                if (navigator.onLine) {
+                    statusIndicator.innerHTML = '<span class="material-icon" style="font-size: 0.8rem; color: var(--google-green);">wifi</span> Online';
+                    statusIndicator.style.background = 'var(--google-green-50)';
+                    statusIndicator.style.color = 'var(--google-green-700)';
+                    statusIndicator.style.border = '1px solid var(--google-green-100)';
+                } else {
+                    statusIndicator.innerHTML = '<span class="material-icon" style="font-size: 0.8rem; color: var(--google-red);">wifi_off</span> Offline';
+                    statusIndicator.style.background = 'var(--google-red-50)';
+                    statusIndicator.style.color = 'var(--google-red-700)';
+                    statusIndicator.style.border = '1px solid var(--google-red-100)';
+                }
+                
+                // Remove existing indicator
+                const existing = document.querySelector('.connection-status');
+                if (existing) existing.remove();
+                
+                statusIndicator.className = 'connection-status';
+                document.body.appendChild(statusIndicator);
+            }
+            
+            // Monitor connection status
+            window.addEventListener('online', updateConnectionStatus);
+            window.addEventListener('offline', updateConnectionStatus);
+            updateConnectionStatus();
+            
+            // Add event listener for try again button
+            const tryAgainBtn = document.getElementById('tryAgainBtn');
+            if (tryAgainBtn) {
+                tryAgainBtn.addEventListener('click', function() {
+                    window.location.reload();
+                });
+            }
+            
+            // Enhanced retry button
+            const retryButton = document.querySelector('button[onclick*="reload"]');
+            retryButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                this.innerHTML = '<span class="spinner"></span> Retrying...';
+                this.disabled = true;
+                
+                // Add small delay to show loading state
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // R key for retry
+                if (e.key === 'r' || e.key === 'R') {
+                    if (e.ctrlKey || e.metaKey) return; // Don't override browser refresh
+                    e.preventDefault();
+                    retryButton.click();
+                }
+                
+                // H key for home
+                if (e.key === 'h' || e.key === 'H') {
+                    window.location.href = '/';
+                }
+            });
+            
+            // Show keyboard hints
+            const hintsDiv = document.createElement('div');
+            hintsDiv.innerHTML = `
+                <div style="font-size: 0.75rem; color: var(--google-grey-600); margin-top: var(--spacing-md);">
+                    <strong>Keyboard shortcuts:</strong> R = Retry, H = Home
+                </div>
+            `;
+            document.querySelector('.card-body').appendChild(hintsDiv);
+            
+            // Focus management for accessibility
+            document.querySelector('h1').focus();
+            
+            console.log('500 Error Page loaded - GDG EUE Event Manager');
+        });
+    </script>
+</body>
+</html>

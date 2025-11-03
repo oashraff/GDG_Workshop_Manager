@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create New Workshop - GDG EUE Workshop Manager">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%234285f4'/%3E%3Ctext x='50' y='60' text-anchor='middle' fill='white' font-family='sans-serif' font-size='40' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" type="text/css" href="/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title><%= title || 'Create New Workshop - GDG EUE' %></title>
+    
+    <!-- Security headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <div class="logo-icon">G</div>
+                GDG Workshop Manager
+            </a>
+            
+            <nav class="nav">
+                <a href="/events/dashboard" class="nav-link">Dashboard</a>
+                <a href="/events/create" class="nav-link active">Create Workshop</a>
+                <a href="/attendee" class="nav-link">Public View</a>
+                
+                <form action="/logout" method="POST" style="display: inline;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Page Header -->
+            <div style="margin-bottom: var(--spacing-xl);">
+                <div class="flex flex-between">
+                    <div>
+                        <h1 style="margin-bottom: var(--spacing-sm);">Create New Workshop</h1>
+                        <p style="color: var(--google-grey-600);">
+                            Design engaging tech workshops for the GDG EUE community
+                        </p>
+                    </div>
+                    <div>
+                        <a href="/events/dashboard" class="btn btn-outline">
+                            ← Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workshop Creation Form -->
+            <div class="grid grid-2" style="gap: var(--spacing-xl);">
+                <!-- Main Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Workshop Details</h2>
+                        <p style="color: var(--google-grey-600); font-size: 0.875rem;">
+                            All fields marked with * are required
+                        </p>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Error Messages -->
+                        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+                            <div class="alert alert-error" role="alert">
+                                <strong>Please correct the following errors:</strong>
+                                <ul style="margin: var(--spacing-sm) 0 0 var(--spacing-md);">
+                                    <% errors.forEach(error => { %>
+                                        <li><%= error.msg %></li>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                        <% } %>
+                        
+                        <form action="/events/create" method="POST" novalidate>
+                            <!-- CSRF Protection -->
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            
+                            <!-- Workshop Title -->
+                            <div class="form-group">
+                                <label for="title" class="form-label">
+                                    Workshop Title <span style="color: var(--google-red);">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="title" 
+                                    name="title" 
+                                    class="form-control" 
+                                    required 
+                                    placeholder="e.g., Build Firebase Auth in 60 minutes"
+                                    value="<%= formData.title || '' %>"
+                                    aria-describedby="title-help"
+                                >
+                                <div id="title-help" class="form-text">
+                                    Create an engaging title that clearly describes what attendees will build
+                                </div>
+                            </div>
+                            
+                            <!-- Workshop Description -->
+                            <div class="form-group">
+                                <label for="description" class="form-label">
+                                    Description
+                                </label>
+                                <textarea 
+                                    id="description" 
+                                    name="description" 
+                                    class="form-control" 
+                                    rows="4"
+                                    placeholder="Describe what attendees will learn and build in this workshop..."
+                                    aria-describedby="description-help"
+                                ><%= formData.description || '' %></textarea>
+                                <div id="description-help" class="form-text">
+                                    Provide a detailed description including prerequisites and outcomes
+                                </div>
+                            </div>
+                            
+                            <!-- Tech Stack -->
+                            <div class="form-group">
+                                <label for="tech_stack" class="form-label">
+                                    Technology Stack <span style="color: var(--google-red);">*</span>
+                                </label>
+                                <select 
+                                    id="tech_stack" 
+                                    name="tech_stack" 
+                                    class="form-control" 
+                                    multiple
+                                    aria-describedby="tech-help"
+                                >
+                                    <option value="Firebase">Firebase</option>
+                                    <option value="Flutter">Flutter</option>
+                                    <option value="Android">Android Development</option>
+                                    <option value="Cloud">Google Cloud</option>
+                                    <option value="TensorFlow">TensorFlow</option>
+                                    <option value="Angular">Angular</option>
+                                    <option value="Material">Material Design</option>
+                                    <option value="JavaScript">JavaScript</option>
+                                    <option value="Python">Python</option>
+                                    <option value="Kotlin">Kotlin</option>
+                                </select>
+                                <div id="tech-help" class="form-text">
+                                    Hold Ctrl/Cmd to select multiple technologies
+                                </div>
+                            </div>
+                            
+                            <!-- Skill Level -->
+                            <div class="form-group">
+                                <label for="skill_level" class="form-label">
+                                    Skill Level <span style="color: var(--google-red);">*</span>
+                                </label>
+                                <select 
+                                    id="skill_level" 
+                                    name="skill_level" 
+                                    class="form-control" 
+                                    required
+                                    aria-describedby="skill-help"
+                                >
+                                    <option value="">Select difficulty level</option>
+                                    <option value="1" <%= formData.skill_level == '1' ? 'selected' : '' %>>
+                                        Beginner - No prior experience needed
+                                    </option>
+                                    <option value="2" <%= formData.skill_level == '2' ? 'selected' : '' %>>
+                                        Intermediate - Some programming experience required
+                                    </option>
+                                    <option value="3" <%= formData.skill_level == '3' ? 'selected' : '' %>>
+                                        Advanced - Strong programming background expected
+                                    </option>
+                                </select>
+                                <div id="skill-help" class="form-text">
+                                    This helps attendees choose appropriate workshops
+                                </div>
+                            </div>
+                            
+                            <!-- Workshop Date & Time -->
+                            <div class="grid grid-2">
+                                <div class="form-group">
+                                    <label for="event_date" class="form-label">
+                                        Date & Time <span style="color: var(--google-red);">*</span>
+                                    </label>
+                                    <input 
+                                        type="datetime-local" 
+                                        id="event_date" 
+                                        name="event_date" 
+                                        class="form-control" 
+                                        required
+                                        value="<%= formData.event_date || '' %>"
+                                        aria-describedby="date-help"
+                                    >
+                                    <div id="date-help" class="form-text">
+                                        Workshop start time
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="duration_minutes" class="form-label">
+                                        Duration (minutes)
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="duration_minutes" 
+                                        name="duration_minutes" 
+                                        class="form-control" 
+                                        min="30" 
+                                        max="480" 
+                                        step="15"
+                                        value="<%= formData.duration_minutes || '90' %>"
+                                        aria-describedby="duration-help"
+                                    >
+                                    <div id="duration-help" class="form-text">
+                                        Default: 90 minutes
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Capacity -->
+                            <div class="form-group">
+                                <label for="max_attendees" class="form-label">
+                                    Maximum Attendees
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="max_attendees" 
+                                    name="max_attendees" 
+                                    class="form-control" 
+                                    min="5" 
+                                    max="200"
+                                    value="<%= formData.max_attendees || '50' %>"
+                                    aria-describedby="capacity-help"
+                                >
+                                <div id="capacity-help" class="form-text">
+                                    Consider room capacity and interactive nature of the workshop
+                                </div>
+                            </div>
+                            
+                            <!-- Co-hosts -->
+                            <div class="form-group">
+                                <label for="co_hosts" class="form-label">
+                                    Co-hosts (GDG Members)
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="co_hosts" 
+                                    name="co_hosts" 
+                                    class="form-control" 
+                                    placeholder="member1@uol.eue.edu.eg, member2@uol.eue.edu.eg"
+                                    value="<%= formData.co_hosts || '' %>"
+                                    aria-describedby="cohost-help"
+                                >
+                                <div id="cohost-help" class="form-text">
+                                    Separate multiple emails with commas. Co-hosts get read-only dashboard access
+                                </div>
+                            </div>
+                            
+                            <!-- Recurring Event Option -->
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    id="is_recurring" 
+                                    name="is_recurring" 
+                                    class="form-check-input"
+                                    <%= formData.is_recurring ? 'checked' : '' %>
+                                >
+                                <label for="is_recurring" class="form-check-label">
+                                    Make this a recurring workshop series
+                                </label>
+                            </div>
+                            
+                            <!-- Form Actions -->
+                            <div class="flex flex-between" style="margin-top: var(--spacing-xl);">
+                                <a href="/events/dashboard" class="btn btn-outline">
+                                    Cancel
+                                </a>
+                                <div style="display: flex; gap: var(--spacing-md);">
+                                    <button type="submit" name="action" value="save_draft" class="btn btn-outline">
+                                        Save as Draft
+                                    </button>
+                                    <button type="submit" name="action" value="publish" class="btn btn-primary">
+                                        Create & Publish Workshop
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Side Panel -->
+                <div>
+                    <!-- Preview Card -->
+                    <div class="card" style="margin-bottom: var(--spacing-lg);">
+                        <div class="card-header">
+                            <h3>Workshop Preview</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="preview-content">
+                                <p style="color: var(--google-grey-600); font-style: italic;">
+                                    Fill in the form to see a preview of how your workshop will appear to attendees
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Guidelines -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Workshop Guidelines</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul style="margin: 0; padding-left: var(--spacing-md);">
+                                <li>Keep titles concise and action-oriented</li>
+                                <li>Include clear learning outcomes</li>
+                                <li>Specify any required software or accounts</li>
+                                <li>Consider providing setup instructions beforehand</li>
+                                <li>Plan interactive elements and Q&A time</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="flex flex-between">
+                <div>
+                    <p style="margin: 0; font-size: 0.875rem;">
+                        GDG On Campus EUE - Workshop Management System
+                    </p>
+                </div>
+                <div>
+                    <p style="margin: 0; font-size: 0.75rem; opacity: 0.8;">
+                        Academic Project by Omar Ashraf Mohammed, April 2025
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Form Enhancement -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const titleInput = document.getElementById('title');
+            const descriptionInput = document.getElementById('description');
+            const techStackSelect = document.getElementById('tech_stack');
+            const skillLevelSelect = document.getElementById('skill_level');
+            const previewContent = document.getElementById('preview-content');
+            
+            // Real-time preview generation
+            function updatePreview() {
+                const title = titleInput.value.trim();
+                const description = descriptionInput.value.trim();
+                const selectedTech = Array.from(techStackSelect.selectedOptions).map(option => option.value);
+                const skillLevel = skillLevelSelect.value;
+                
+                if (!title) {
+                    previewContent.innerHTML = '<p style="color: var(--google-grey-600); font-style: italic;">Enter a workshop title to see preview</p>';
+                    return;
+                }
+                
+                const skillLevels = { '1': 'Beginner', '2': 'Intermediate', '3': 'Advanced' };
+                const skillClasses = { '1': 'skill-beginner', '2': 'skill-intermediate', '3': 'skill-advanced' };
+                
+                let previewHTML = `
+                    <div class="event-card-preview" style="border: 1px solid var(--google-grey-300); border-radius: var(--border-radius-md); padding: var(--spacing-md);">
+                        <h4 style="margin-bottom: var(--spacing-sm); color: var(--google-grey-800);">${title}</h4>
+                `;
+                
+                if (selectedTech.length > 0) {
+                    previewHTML += '<div class="tech-stack" style="margin-bottom: var(--spacing-sm);">';
+                    selectedTech.forEach(tech => {
+                        previewHTML += `<span class="tech-tag ${tech.toLowerCase()}" style="background: var(--google-blue-50); color: var(--google-blue-700); padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--border-radius-sm); font-size: 0.75rem; margin-right: var(--spacing-xs);">${tech}</span>`;
+                    });
+                    previewHTML += '</div>';
+                }
+                
+                if (skillLevel) {
+                    previewHTML += `<div><span class="skill-badge ${skillClasses[skillLevel]}" style="background: var(--google-green-50); color: var(--google-green-700); padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--border-radius-sm); font-size: 0.75rem;">${skillLevels[skillLevel]}</span></div>`;
+                }
+                
+                if (description) {
+                    previewHTML += `<p style="margin-top: var(--spacing-sm); color: var(--google-grey-600); font-size: 0.875rem;">${description.substring(0, 150)}${description.length > 150 ? '...' : ''}</p>`;
+                }
+                
+                previewHTML += '</div>';
+                previewContent.innerHTML = previewHTML;
+            }
+            
+            // Attach event listeners for real-time preview
+            titleInput.addEventListener('input', updatePreview);
+            descriptionInput.addEventListener('input', updatePreview);
+            techStackSelect.addEventListener('change', updatePreview);
+            skillLevelSelect.addEventListener('change', updatePreview);
+            
+            // Form validation enhancement
+            form.addEventListener('submit', function(e) {
+                const submitButton = e.submitter;
+                const originalText = submitButton.textContent;
+                
+                // Show loading state
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="spinner"></span> Processing...';
+                
+                // Reset button after timeout (in case of error)
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                }, 10000);
+            });
+            
+            // Tech stack multi-select enhancement
+            const techStackOptions = Array.from(techStackSelect.options);
+            techStackSelect.addEventListener('change', function() {
+                const selectedCount = this.selectedOptions.length;
+                const helpText = this.nextElementSibling;
+                
+                if (selectedCount === 0) {
+                    helpText.textContent = 'Hold Ctrl/Cmd to select multiple technologies';
+                    helpText.style.color = 'var(--google-grey-600)';
+                } else {
+                    helpText.textContent = `${selectedCount} technology${selectedCount > 1 ? 'ies' : 'y'} selected`;
+                    helpText.style.color = 'var(--google-green-600)';
+                }
+            });
+            
+            // Auto-save draft functionality (optional enhancement)
+            let autoSaveTimeout;
+            function scheduleAutoSave() {
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(() => {
+                    // Auto-save implementation would go here
+                    console.log('Auto-save triggered (not implemented for coursework)');
+                }, 30000); // 30 seconds
+            }
+            
+            // Schedule auto-save on form changes
+            form.addEventListener('input', scheduleAutoSave);
+            form.addEventListener('change', scheduleAutoSave);
+            
+            console.log('Workshop creation form loaded successfully');
+        });
+    </script>
+</body>
+</html>
