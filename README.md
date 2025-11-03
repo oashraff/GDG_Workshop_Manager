@@ -1,5 +1,6 @@
 # GDG On Campus EUE Event Manager
 
+Live URL: https://gdgmanager.koyeb.app/
 A comprehensive event management system designed specifically for Google Developer Group (GDG) On Campus at European Universities in Egypt (EUE). This application enables organisers to create, manage, and publish tech workshops while providing attendees with an intuitive booking experience.
 
 **Author**: Omar Ashraf Mohammed  
