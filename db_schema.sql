@@ -92,13 +92,13 @@ CREATE INDEX IF NOT EXISTS idx_admin_active ON admin_users(is_active);
 -- Sample Data for GDG EUE Workshop Demonstrations
 
 INSERT INTO gdg_events (title, description, tech_stack, skill_level, event_date, duration_minutes, published_at) VALUES 
-('Firebase Authentication Masterclass', 'Learn to implement secure user authentication with Firebase Auth, covering OAuth, email verification, and security best practices for modern web applications.', '["Firebase", "JavaScript", "Security"]', 2, '2025-07-15 14:00:00', 120, CURRENT_TIMESTAMP),
-('Flutter Mobile Development Workshop', 'Build your first cross-platform mobile application using Flutter framework, covering widgets, state management, and API integration.', '["Flutter", "Dart", "Mobile"]', 1, '2025-07-20 10:00:00', 180, CURRENT_TIMESTAMP),
-('Advanced Android with Kotlin', 'Deep dive into modern Android development with Kotlin, exploring coroutines, architecture patterns, and Material Design 3.', '["Android", "Kotlin", "Architecture"]', 3, '2025-07-25 13:00:00', 150, CURRENT_TIMESTAMP);
+('Firebase Authentication Masterclass', 'Learn to implement secure user authentication with Firebase Auth, covering OAuth, email verification, and security best practices for modern web applications.', '["Firebase", "JavaScript", "Security"]', 2, '2025-12-15 14:00:00', 120, CURRENT_TIMESTAMP),
+('Flutter Mobile Development Workshop', 'Build your first cross-platform mobile application using Flutter framework, covering widgets, state management, and API integration.', '["Flutter", "Dart", "Mobile"]', 1, '2025-12-20 10:00:00', 180, CURRENT_TIMESTAMP),
+('Advanced Android with Kotlin', 'Deep dive into modern Android development with Kotlin, exploring coroutines, architecture patterns, and Material Design 3.', '["Android", "Kotlin", "Architecture"]', 3, '2026-01-10 13:00:00', 150, CURRENT_TIMESTAMP);
 
 -- Draft workshop for testing unpublished content
 INSERT INTO gdg_events (title, description, tech_stack, skill_level, event_date, duration_minutes) VALUES 
-('Google Cloud Functions Deep Dive', 'Serverless computing with Google Cloud Functions, covering deployment strategies, monitoring, and cost optimisation techniques.', '["Google Cloud", "Node.js", "Serverless"]', 2, '2025-08-01 15:00:00', 90);
+('Google Cloud Functions Deep Dive', 'Serverless computing with Google Cloud Functions, covering deployment strategies, monitoring, and cost optimisation techniques.', '["Google Cloud", "Node.js", "Serverless"]', 2, '2026-01-15 15:00:00', 90);
 
 -- Ticket types for workshops - demonstrating GDG member benefits
 INSERT INTO ticket_types (event_id, name, price, quantity_available, gdg_discount, is_member_only) VALUES 
