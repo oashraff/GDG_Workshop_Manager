@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-db": "cat db_schema.sql | sqlite3 database.db #build anew database from the sql file",
+    "build-db": "node build-db.js",
     "clean-db": "rm database.db #remove the old database",
-    "build-db-win": "sqlite3 database.db < db_schema.sql",
+    "build-db-win": "node build-db.js",
     "clean-db-win": "del database.db",
     "start": "node index.js",
     "dev": "node index.js",
     "seed-db": "node scripts/seed-database.js",
-    "reset-db": "npm run clean-db && npm run build-db && npm run seed-db"
+    "reset-db": "npm run clean-db && npm run build-db && npm run seed-db",
+    "heroku-postbuild": "node build-db.js"
   },
   "author": "Omar Ashraf Mohammed",
   "license": "ISC",
