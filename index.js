@@ -33,7 +33,7 @@ const { handleLogin, handleLogout } = require('./controllers/auth');
 
 // Application Configuration
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // Security Headers - Applied first for maximum protection
 app.use(securityHeaders());
@@ -301,10 +301,10 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`
 [SERVER] GDG EUE Event Manager Started Successfully
-[URL] Server running on: http://localhost:${port}
+[URL] Server running on: http://0.0.0.0:${port}
 [SECURITY] ${process.env.NODE_ENV === 'production' ? 'Production' : 'Development'} mode
 [DATABASE] SQLite with WAL mode enabled
 [PROTECTION] OWASP compliance active
